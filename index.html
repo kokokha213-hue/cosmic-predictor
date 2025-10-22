@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cosmic Synaptic Predictor — Live Demo</title>
+  <style>
+    :root{
+      --bg:#020205;
+      --panel:#071221;
+      --accent:#00ff99;
+      --accent-2:#9b59ff;
+      --muted:#7f8c8d;
+      --glow:0 0 16px rgba(0,255,153,0.12);
+      --mono: 'Courier New', monospace;
+    }
+    *{box-sizing:border-box}
+    body {
+      margin:0;
+      font-family: system-ui, Arial, sans-serif;
+      background: linear-gradient(180deg,#000011 0%, #04040a 60%);
+      color: #dfffdc;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .card{
+      width:980px;
+      max-width:96vw;
+      background:linear-gradient(180deg, rgba(8,12,20,0.9), rgba(6,8,14,0.85));
+      border-radius:14px;
+      padding:18px;
+      box-shadow: 0 10px 60px rgba(0,0,0,0.6), var(--glow);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    header{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex;align-items:center;justify-content:center;color:#001;
+      font-weight:700; font-family:var(--mono); box-shadow:0 6px 20px rgba(155,89,255,0.12);
+    }
+    h1{margin:0;font-size:20px;letter-spacing:0.6px}
+    p.lead{margin:6px 0 14px;color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:16px;}
+    .panel{background:rgba(0,0,0,0.4);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+    textarea{width:100%;height:84px;background:#01030a;border-radius:8px;border:1px solid rgba(255,255,255,0.03);color:var(--accent);padding:12px;font-family:var(--mono);font-size:15px}
+    .controls{display:flex;gap:10px;align-items:center;margin-top:8px}
+    button.primary{background:linear-gradient(90deg,var(--accent),#00ffdd);color:#002;border:none;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer;box-shadow:0 8px 30px rgba(0,255,153,0.08)}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:8px 10px;border-radius:8px;cursor:pointer}
+    pre.output{background:#05060b;border-radius:8px;padding:14px;color:var(--accent);font-family:var(--mono);height:360px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+    .small{font-size:12px;color:var(--muted)}
+    footer{margin-top:12px;text-align:center;color:var(--muted);font-size:12px}
+    .badge{display:inline-block;padding:6px 8px;border-radius:6px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.02);font-family:var(--mono);font-size:12px}
+    .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <header>
+      <div class="logo">CS</div>
+      <div>
+        <h1>Cosmic Synaptic Predictor — Live Demo</h1>
+        <p class="lead">Educational demo — simulates pattern-based predictions. Not a guaranteed method for real betting.</p>
+      </div>
+    </header>
+
+    <div class="grid" style="margin-top:12px">
+      <div class="panel">
+        <div class="small">Enter last <b>10</b> results (comma separated)</div>
+        <textarea id="input">3,3,8,2,3,9,0,3,7,5</textarea>
+        <div class="controls">
+          <button id="predict" class="primary">Predict Now</button>
+          <button id="next" class="ghost">Next Prediction</button>
+          <button id="reset" class="ghost">Reset</button>
+          <div style="flex:1"></div>
+          <div class="meta">
+            <span class="badge">3X MARTINGALE</span>
+            <span class="badge">Frequency+Recency</span>
+            <span class="badge">Demo</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px" class="small">
+          Tips: Paste exact last results from your game period. Use the <b>Next Prediction</b> button to simulate the following PID (keeps AI_MEMORY_STATE in the demo).
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="small">Prediction Output</div>
+        <pre id="output" class="output">(prediction will appear here)</pre>
+      </div>
+    </div>
+
+    <footer>
+      WHITE HACKER AI v4.2 "COSMIC SYNAPTIC CORE" — Demo © 2025 • Educational only
+    </footer>
+  </div>
+
+<script>
+const COLORS = { red: [0,2,4,6,8], green:[1,3,5,7,9], violet:[0,5] };
+const SIZE = n => n>=5? 'BIG':'SMALL';
+
+function parseInput(str){
+  return str.split(',').map(x=>parseInt(x)).filter(n=>!isNaN(n)).slice(0,10);
+}
+
+function combinePredictors(lastResults){
+  const scores = new Array(10).fill(1.0);
+  const freq = {};
+  lastResults.forEach(n=> freq[n]=(freq[n]||0)+1);
+  Object.entries(freq).forEach(([n,c])=> scores[parseInt(n)] += c*1.5);
+  for(let i=0;i<lastResults.length;i++){
+    const n = lastResults[lastResults.length-1-i];
+    scores[n] += (i+1)*0.3;
+  }
+  const items = scores.map((s,i)=>({n:i,s})).sort((a,b)=>b.s-a.s);
+  const best = items[0].n;
+  const avg = scores.reduce((a,b)=>a+b,0)/10;
+  const conf = Math.min(98, Math.round(50 + (items[0].s - avg)*10));
+  let color = COLORS.green.includes(best)?'🟢':'🔴';
+  if(COLORS.violet.includes(best)) color='🟣';
+  return { number: best, color, size: SIZE(best), confidence: conf };
+}
+
+// Simple martingale demo tracker stored in local memory for the demo session
+let AI_MEMORY_STATE = {
+  current_level: 1,
+  total_invested: 10,
+  last_10_results: [3,3,8,2,3,9,0,3,7,5],
+  last_top_logic: 'Frequency+Recency Heuristic',
+  last_result: 'N/A'
+};
+
+function buildOutputBlock(prediction, pid){
+  return `WHITE HACKER AI v4.2 "COSMIC SYNAPTIC CORE"
+=================================
+ANALYSIS: COMPLETE | ${pid}
+
+▶️ PRIMARY PREDICTION
+- SIZE: ${prediction.size}
+- COLOR: ${prediction.color}
+- NUMBER: ${prediction.number}
+🔥 CONFIDENCE SCORE: ${prediction.confidence}%
+💡 DOMINANT LOGIC: Frequency + Recency Heuristic
+
+💰 CAPITAL MANAGEMENT
+- LAST ROUND: ${AI_MEMORY_STATE.last_result}
+- CURRENT LEVEL: Level ${AI_MEMORY_STATE.current_level}
+- NEXT BET: ₹${10 * (3 ** (AI_MEMORY_STATE.current_level-1))}
+- INVESTED (Cycle): ₹${AI_MEMORY_STATE.total_invested}
+- P/L (Cycle): ${AI_MEMORY_STATE.last_result === 'WIN' ? '+₹10' : '-₹' + Math.max(0, AI_MEMORY_STATE.total_invested - 10)}
+
+📋 AI_MEMORY_STATE (COPY FOR NEXT TURN):
+{
+  "current_level": ${AI_MEMORY_STATE.current_level},
+  "total_invested": ${AI_MEMORY_STATE.total_invested},
+  "last_10_results": [${AI_MEMORY_STATE.last_10_results.join(', ')}],
+  "last_top_logic": "${AI_MEMORY_STATE.last_top_logic}",
+  "last_result": "${AI_MEMORY_STATE.last_result}"
+}
+
+(Use this demo for learning; not a guaranteed strategy.)`;
+}
+
+function doPredict(useNext=false){
+  const inputEl = document.getElementById('input');
+  const outEl = document.getElementById('output');
+  let arr = parseInput(inputEl.value);
+  if(arr.length < 1){
+    outEl.textContent = 'Enter at least one number.'; return;
+  }
+  // If useNext, simulate sliding window: push last predicted number into history
+  if(useNext){
+    // push last predicted number if exists
+    if(AI_MEMORY_STATE.last_generated_number !== undefined){
+      arr = arr.slice(1); // drop oldest
+      arr.push(AI_MEMORY_STATE.last_generated_number);
+      AI_MEMORY_STATE.last_10_results = arr.slice();
+    }
+  } else {
+    AI_MEMORY_STATE.last_10_results = arr.slice();
+  }
+
+  const p = combinePredictors(AI_MEMORY_STATE.last_10_results);
+  AI_MEMORY_STATE.last_generated_number = p.number;
+  // Update martingale demo (very simplistic): if last_result was LOSS, level++ and add invested
+  if(AI_MEMORY_STATE.last_result === 'LOSS'){
+    AI_MEMORY_STATE.current_level += 1;
+    AI_MEMORY_STATE.total_invested += 10 * (3 ** (AI_MEMORY_STATE.current_level-1));
+  } else if (AI_MEMORY_STATE.last_result === 'WIN'){
+    AI_MEMORY_STATE.current_level = 1;
+    AI_MEMORY_STATE.total_invested = 10;
+  } else {
+    // initial
+    AI_MEMORY_STATE.current_level = 1;
+    AI_MEMORY_STATE.total_invested = 10;
+  }
+
+  const pid = 'PID-' + Math.floor(Math.random()*900000+100000);
+  outEl.textContent = buildOutputBlock(p, pid);
+}
+
+document.getElementById('predict').addEventListener('click', ()=>{ AI_MEMORY_STATE.last_result = 'N/A'; doPredict(false); });
+document.getElementById('next').addEventListener('click', ()=>{ AI_MEMORY_STATE.last_result = 'N/A'; doPredict(true); });
+document.getElementById('reset').addEventListener('click', ()=>{
+  AI_MEMORY_STATE = { current_level:1, total_invested:10, last_10_results:[3,3,8,2,3,9,0,3,7,5], last_top_logic:'Frequency+Recency Heuristic', last_result:'N/A'};
+  document.getElementById('input').value = '3,3,8,2,3,9,0,3,7,5';
+  document.getElementById('output').textContent = '(prediction will appear here)';
+});
+
+// Auto-initialize output
+doPredict(false);
+</script>
+</body>
+</html>
