@@ -15,10 +15,10 @@
   body {
     background: linear-gradient(135deg, #000000, #25F4EE, #FE2C55);
     min-height: 100vh;
+    padding: 20px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 20px;
+    align-items: flex-start;
   }
 
   .container {
@@ -27,7 +27,7 @@
     border-radius: 20px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     width: 100%;
-    max-width: 500px;
+    max-width: 650px;
     text-align: center;
   }
 
@@ -43,22 +43,56 @@
     margin-bottom: 20px;
   }
 
-  input {
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: #f0f0f0;
+    padding: 5px;
+    border-radius: 10px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #666;
+    transition: 0.3s;
+  }
+
+  .tab.active {
+    background: #fff;
+    color: #FE2C55;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  textarea, input {
     width: 100%;
     padding: 14px 16px;
     border: 2px solid #ddd;
     border-radius: 10px;
-    font-size: 16px;
+    font-size: 15px;
     outline: none;
     transition: 0.3s;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    resize: vertical;
   }
 
-  input:focus {
+  textarea {
+    min-height: 120px;
+  }
+
+  textarea:focus, input:focus {
     border-color: #25F4EE;
     box-shadow: 0 0 10px rgba(37,244,238,0.4);
   }
 
-  button {
+  button.show-btn {
     width: 100%;
     margin-top: 15px;
     padding: 14px;
@@ -72,8 +106,8 @@
     transition: 0.3s;
   }
 
-  button:hover {
-    transform: scale(1.03);
+  button.show-btn:hover {
+    transform: scale(1.02);
     box-shadow: 0 8px 20px rgba(254,44,85,0.4);
   }
 
@@ -83,32 +117,45 @@
     border-radius: 12px;
     background: #f9f9f9;
     display: none;
-    word-wrap: break-word;
+    min-height: 100px;
+    overflow: hidden;
   }
 
-  #result a {
+  .help-box {
+    background: #fff8e1;
+    border-left: 4px solid #ffc107;
+    padding: 12px 15px;
+    border-radius: 8px;
+    text-align: left;
+    font-size: 13px;
+    color: #555;
+    margin-top: 15px;
+    line-height: 1.6;
+  }
+
+  .help-box b {
+    color: #FE2C55;
+  }
+
+  .help-box ol {
+    margin-left: 18px;
+    margin-top: 6px;
+  }
+
+  .help-box ol li {
+    margin-bottom: 4px;
+  }
+
+  .error {
     color: #FE2C55;
     font-weight: bold;
-    text-decoration: none;
-    font-size: 16px;
+    padding: 10px;
   }
 
-  #result a:hover {
-    text-decoration: underline;
-  }
-
-  .loading {
-    color: #25F4EE;
-    font-weight: bold;
-  }
-
-  iframe {
-    margin-top: 15px;
-    width: 100%;
-    max-width: 340px;
-    height: 580px;
-    border: none;
-    border-radius: 12px;
+  /* TikTok embed styling override */
+  .tiktok-embed {
+    margin: 0 auto !important;
+    max-width: 100% !important;
   }
 </style>
 </head>
@@ -116,62 +163,148 @@
 
 <div class="container">
   <h1>🎵 TikTok Profile Viewer</h1>
-  <p class="subtitle">Username ya link dalo aur direct dekho</p>
+  <p class="subtitle">Username ya Embed Code dalo aur direct dekho</p>
 
-  <input type="text" id="tiktokInput" placeholder="e.g. @username ya https://tiktok.com/@username" />
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" id="tabUsername" onclick="switchTab('username')">👤 Username</button>
+    <button class="tab" id="tabEmbed" onclick="switchTab('embed')">📋 Embed Code</button>
+  </div>
 
-  <button onclick="showProfile()">Show Profile</button>
+  <!-- Username Input -->
+  <div id="usernameBox">
+    <input type="text" id="tiktokInput" placeholder="e.g. @username ya https://tiktok.com/@username" />
+    <button class="show-btn" onclick="showByUsername()">Show Profile</button>
+
+    <div class="help-box">
+      <b>💡 Note:</b> Username se profile TikTok ki security ki wajah se direct load nahi hoti. 
+      Behtar natija ke liye <b>"Embed Code"</b> tab use karein.
+    </div>
+  </div>
+
+  <!-- Embed Code Input -->
+  <div id="embedBox" style="display:none;">
+    <textarea id="embedInput" placeholder='Yahan TikTok ka embed code paste karein...&#10;&#10;Example:&#10;<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@username" data-unique-id="username" data-embed-type="creator">...'></textarea>
+    <button class="show-btn" onclick="showByEmbed()">Load Embed</button>
+
+    <div class="help-box">
+      <b>📖 Embed Code Kaise Lein:</b>
+      <ol>
+        <li>TikTok app ya website par jayein</li>
+        <li>Apni profile ya kisi video par <b>Share</b> button dabayein</li>
+        <li><b>"Embed"</b> option select karein</li>
+        <li>Code copy karke yahan paste karein</li>
+        <li><b>"Load Embed"</b> dabayein</li>
+      </ol>
+    </div>
+  </div>
 
   <div id="result"></div>
 </div>
 
+<!-- TikTok Official Embed Script -->
+<script async src="https://www.tiktok.com/embed.js"></script>
+
 <script>
-  function showProfile() {
+  let currentTab = 'username';
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('tabUsername').classList.toggle('active', tab === 'username');
+    document.getElementById('tabEmbed').classList.toggle('active', tab === 'embed');
+    document.getElementById('usernameBox').style.display = tab === 'username' ? 'block' : 'none';
+    document.getElementById('embedBox').style.display = tab === 'embed' ? 'block' : 'none';
+    document.getElementById('result').style.display = 'none';
+  }
+
+  // ===== Method 1: Username se show =====
+  function showByUsername() {
     const input = document.getElementById('tiktokInput').value.trim();
     const result = document.getElementById('result');
 
     if (!input) {
       result.style.display = 'block';
-      result.innerHTML = '<span style="color:#FE2C55;">⚠️ Pehle username ya link dalo!</span>';
+      result.innerHTML = '<div class="error">⚠️ Pehle username ya link dalo!</div>';
       return;
     }
 
     let username = '';
-
-    // Agar full link diya hai
     if (input.includes('tiktok.com')) {
       const match = input.match(/@([a-zA-Z0-9._]+)/);
       if (match) username = match[1];
-    } 
-    // Agar @username diya hai
-    else if (input.startsWith('@')) {
+    } else if (input.startsWith('@')) {
       username = input.substring(1);
-    } 
-    // Agar sirf username diya hai
-    else {
+    } else {
       username = input;
     }
 
+    username = username.replace(/[\/\s]+$/, '');
+
     if (!username) {
       result.style.display = 'block';
-      result.innerHTML = '<span style="color:#FE2C55;">❌ Sahi username ya link dalo!</span>';
+      result.innerHTML = '<div class="error">❌ Sahi username dalo!</div>';
       return;
     }
 
-    const profileUrl = `https://www.tiktok.com/@${username}`;
+    // TikTok official creator embed code generate karo
+    const embedHTML = `
+      <blockquote class="tiktok-embed" 
+        cite="https://www.tiktok.com/@${username}" 
+        data-unique-id="${username}" 
+        data-embed-type="creator" 
+        style="max-width: 605px; min-width: 325px;">
+        <section>
+          <a target="_blank" href="https://www.tiktok.com/@${username}?refer=creator_embed">@${username}</a>
+        </section>
+      </blockquote>
+    `;
 
     result.style.display = 'block';
-    result.innerHTML = `
-      <p style="color:#333; margin-bottom:10px;">✅ Profile:</p>
-      <a href="${profileUrl}" target="_blank">${profileUrl}</a>
-      <br><br>
-      <iframe src="${profileUrl}" allowfullscreen></iframe>
-    `;
+    result.innerHTML = embedHTML;
+
+    // TikTok script ko dobara load karo taake embed render ho
+    reloadTikTokEmbed();
+  }
+
+  // ===== Method 2: Embed code paste karke =====
+  function showByEmbed() {
+    const code = document.getElementById('embedInput').value.trim();
+    const result = document.getElementById('result');
+
+    if (!code) {
+      result.style.display = 'block';
+      result.innerHTML = '<div class="error">⚠️ Pehle embed code paste karo!</div>';
+      return;
+    }
+
+    if (!code.includes('tiktok-embed') && !code.includes('blockquote')) {
+      result.style.display = 'block';
+      result.innerHTML = '<div class="error">❌ Yeh sahi TikTok embed code nahi lagta!</div>';
+      return;
+    }
+
+    result.style.display = 'block';
+    result.innerHTML = code;
+
+    reloadTikTokEmbed();
+  }
+
+  // ===== TikTok Embed Script Reload =====
+  function reloadTikTokEmbed() {
+    // Purani script hatao
+    const oldScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
+    if (oldScript) oldScript.remove();
+
+    // Nayi script add karo
+    const script = document.createElement('script');
+    script.src = 'https://www.tiktok.com/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
   }
 
   // Enter key support
   document.getElementById('tiktokInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') showProfile();
+    if (e.key === 'Enter') showByUsername();
   });
 </script>
 
