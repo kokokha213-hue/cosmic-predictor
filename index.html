@@ -1,121 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>TikTok Profile Embed</title>
-  <style>
-    body {
-      background: linear-gradient(135deg, #000, #25F4EE, #FE2C55);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-    }
-    .container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 20px;
-      max-width: 650px;
-      width: 100%;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    }
-    h1 { color: #FE2C55; text-align: center; }
-    input {
-      width: 100%;
-      padding: 14px;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-    button {
-      width: 100%;
-      margin-top: 15px;
-      padding: 14px;
-      background: linear-gradient(90deg, #25F4EE, #FE2C55);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #result {
-      margin-top: 25px;
-      min-height: 80px;
-    }
-    .error {
-      color: #FE2C55;
-      font-weight: bold;
-      padding: 15px;
-      background: #fff0f3;
-      border-radius: 10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok Profile Viewer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  body {
+    background: linear-gradient(135deg, #000000, #25F4EE, #FE2C55);
+    min-height: 100vh; padding: 20px;
+    display: flex; justify-content: center; align-items: flex-start;
+  }
+  .container {
+    background: #fff; padding: 30px; border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    width: 100%; max-width: 650px; text-align: center;
+  }
+  h1 { color: #FE2C55; margin-bottom: 10px; font-size: 26px; }
+  p.subtitle { color: #666; font-size: 14px; margin-bottom: 20px; }
+  input {
+    width: 100%; padding: 14px 16px; border: 2px solid #ddd;
+    border-radius: 10px; font-size: 16px; outline: none; transition: 0.3s;
+  }
+  input:focus { border-color: #25F4EE; box-shadow: 0 0 10px rgba(37,244,238,0.4); }
+  button.show-btn {
+    width: 100%; margin-top: 15px; padding: 14px;
+    background: linear-gradient(90deg, #25F4EE, #FE2C55);
+    color: #fff; border: none; border-radius: 10px;
+    font-size: 17px; font-weight: bold; cursor: pointer; transition: 0.3s;
+  }
+  button.show-btn:hover { transform: scale(1.02); box-shadow: 0 8px 20px rgba(254,44,85,0.4); }
+  button.show-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  #result {
+    margin-top: 25px; padding: 20px; border-radius: 12px;
+    background: #f9f9f9; display: none; min-height: 100px;
+  }
+  .error { color: #FE2C55; font-weight: bold; padding: 10px; line-height: 1.6; }
+  .info { color: #666; font-size: 13px; margin-top: 10px; }
+  .tiktok-embed { margin: 0 auto !important; max-width: 100% !important; }
+</style>
 </head>
 <body>
 
 <div class="container">
   <h1>🎵 TikTok Profile Viewer</h1>
-  <input type="text" id="usernameInput" placeholder="Username ya link dalo (e.g. @khaby.lame)" />
-  <button onclick="showProfile()">Show Profile</button>
+  <p class="subtitle">Username ya link dalo aur profile dekho</p>
+
+  <input type="text" id="tiktokInput" placeholder="e.g. @khaby.lame ya https://tiktok.com/@username" />
+  <button class="show-btn" id="showBtn" onclick="showProfile()">Show Profile</button>
+
   <div id="result"></div>
 </div>
 
+<!-- TikTok embed script sirf EK dafa load hoga -->
+<script async src="https://www.tiktok.com/embed.js"></script>
+
 <script>
-function showProfile() {
-  const input = document.getElementById('usernameInput').value.trim();
-  const result = document.getElementById('result');
-  
-  if (!input) {
-    result.innerHTML = '<div class="error">⚠️ Pehle username ya link dalo!</div>';
-    return;
+  // Flag: script already loaded?
+  let scriptLoaded = false;
+  let isLoading = false;
+
+  // Detect jab TikTok script load ho jaye
+  window.addEventListener('load', () => {
+    scriptLoaded = true;
+  });
+
+  function showProfile() {
+    const input = document.getElementById('tiktokInput').value.trim();
+    const result = document.getElementById('result');
+    const btn = document.getElementById('showBtn');
+
+    // Overload protection
+    if (isLoading) {
+      result.style.display = 'block';
+      result.innerHTML = '<div class="error">⏳ Ruko... pehle wala load ho raha hai!</div>';
+      return;
+    }
+
+    if (!input) {
+      result.style.display = 'block';
+      result.innerHTML = '<div class="error">⚠️ Pehle username ya link dalo!</div>';
+      return;
+    }
+
+    // Username extract karo
+    let username = '';
+    if (input.includes('tiktok.com')) {
+      const match = input.match(/@([a-zA-Z0-9._]+)/);
+      if (match) username = match[1];
+    } else if (input.startsWith('@')) {
+      username = input.substring(1);
+    } else {
+      username = input;
+    }
+
+    username = username.replace(/[\/\s]+$/, '');
+
+    if (!username) {
+      result.style.display = 'block';
+      result.innerHTML = '<div class="error">❌ Sahi username dalo!</div>';
+      return;
+    }
+
+    // Button disable karo
+    isLoading = true;
+    btn.disabled = true;
+    btn.textContent = 'Loading...';
+
+    result.style.display = 'block';
+    result.innerHTML = '<div class="info">⏳ Profile load ho raha hai...</div>';
+
+    // Result container clear karo
+    setTimeout(() => {
+      // Fresh blockquote banao
+      const blockquote = document.createElement('blockquote');
+      blockquote.className = 'tiktok-embed';
+      blockquote.setAttribute('cite', `https://www.tiktok.com/@${username}`);
+      blockquote.setAttribute('data-unique-id', username);
+      blockquote.setAttribute('data-embed-type', 'creator');
+      blockquote.style.maxWidth = '605px';
+      blockquote.style.minWidth = '288px';
+
+      const section = document.createElement('section');
+      const link = document.createElement('a');
+      link.target = '_blank';
+      link.href = `https://www.tiktok.com/@${username}?refer=creator_embed`;
+      link.textContent = `@${username}`;
+      section.appendChild(link);
+      blockquote.appendChild(section);
+
+      // Result clear karke naya blockquote daalo
+      result.innerHTML = '';
+      result.appendChild(blockquote);
+
+      // TikTok script ko process karne do
+      setTimeout(() => {
+        isLoading = false;
+        btn.disabled = false;
+        btn.textContent = 'Show Profile';
+
+        // Check karo ke embed render hua ya nahi
+        const iframe = result.querySelector('iframe');
+        if (!iframe) {
+          result.innerHTML = `
+            <div class="error">
+              ❌ Yeh profile embed nahi ho sakti.<br><br>
+              <b>Wajah:</b> Yeh account private hai, ya embed disallowed hai.<br><br>
+              <a href="https://www.tiktok.com/@${username}" target="_blank" 
+                 style="color:#FE2C55; font-weight:bold;">
+                🔗 Direct TikTok par dekho
+              </a>
+            </div>
+          `;
+        }
+      }, 2500);
+    }, 300);
   }
-  
-  // Extract username from input
-  let username = '';
-  if (input.includes('tiktok.com')) {
-    const match = input.match(/@([a-zA-Z0-9._]+)/);
-    if (match) username = match[1];
-  } else if (input.startsWith('@')) {
-    username = input.substring(1);
-  } else {
-    username = input;
-  }
-  
-  if (!username) {
-    result.innerHTML = '<div class="error">❌ Sahi username dalo!</div>';
-    return;
-  }
-  
-  // Official TikTok embed code
-  const embedHTML = `
-    <blockquote class="tiktok-embed" 
-      cite="https://www.tiktok.com/@${username}" 
-      data-unique-id="${username}" 
-      data-embed-type="creator" 
-      style="max-width: 605px; min-width: 288px;">
-      <section>
-        <a target="_blank" href="https://www.tiktok.com/@${username}?refer=creator_embed">@${username}</a>
-      </section>
-    </blockquote>
-  `;
-  
-  // Set innerHTML, then append script AFTER
-  result.innerHTML = embedHTML;
-  
-  // Remove old TikTok script if exists
-  const oldScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
-  if (oldScript) oldScript.remove();
-  
-  // Add TikTok script
-  const script = document.createElement('script');
-  script.src = 'https://www.tiktok.com/embed.js';
-  script.async = true;
-  document.body.appendChild(script);
-}
+
+  // Enter key support
+  document.getElementById('tiktokInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') showProfile();
+  });
 </script>
 
 </body>
