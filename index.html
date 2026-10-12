@@ -1,680 +1,313 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#101014">
-<meta name="description" content="TikTok profile viewer with official profile embeds and reporting resources.">
-<title>TikTok Profile Viewer + Report System</title>
-
+<title>TikTok Viewer + Report System</title>
 <style>
-:root {
-  --pink: #fe2c55;
-  --cyan: #25f4ee;
-  --dark: #101014;
-  --text: #202027;
-  --muted: #71717d;
-  --border: #e8e8ee;
-  --white: #fff;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Arial, sans-serif;
-}
-
-body {
-  min-height: 100vh;
-  padding: 24px 14px;
-  color: var(--text);
-  background:
-    radial-gradient(circle at 5% 5%, #25f4ee44, transparent 32%),
-    radial-gradient(circle at 95% 15%, #fe2c5544, transparent 30%),
-    #101014;
-}
-
-button, input, a {
-  -webkit-tap-highlight-color: transparent;
-}
-
-button, input {
-  font: inherit;
-}
-
-.container {
-  width: 100%;
-  max-width: 760px;
-  margin: auto;
-  padding: 28px;
-  border-radius: 24px;
-  background: var(--white);
-  box-shadow: 0 24px 80px #0005;
-}
-
-.brand {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-
-.brand-icon {
-  font-size: 29px;
-}
-
-h1 {
-  font-size: clamp(21px, 4vw, 29px);
-  letter-spacing: -0.8px;
-  text-align: center;
-}
-
-.gradient-text {
-  color: var(--pink);
-}
-
-.subtitle {
-  text-align: center;
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--muted);
-  margin: 10px 0 25px;
-}
-
-.section-label {
-  font-size: 14px;
-  font-weight: 800;
-  margin-bottom: 12px;
-}
-
-.search-box {
-  display: flex;
-  gap: 10px;
-}
-
-#tiktokInput {
-  width: 100%;
-  min-width: 0;
-  padding: 15px;
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  outline: none;
-  transition: .2s;
-  font-size: 14px;
-}
-
-#tiktokInput:focus {
-  border-color: var(--cyan);
-  box-shadow: 0 0 0 3px #25f4ee25;
-}
-
-button {
-  border: 0;
-  cursor: pointer;
-  transition: transform .2s, opacity .2s;
-}
-
-button:hover {
-  transform: translateY(-1px);
-}
-
-button:disabled {
-  opacity: .65;
-  cursor: wait;
-}
-
-.show-btn {
-  flex-shrink: 0;
-  padding: 0 22px;
-  border-radius: 12px;
-  color: white;
-  font-weight: 800;
-  background: linear-gradient(110deg, #111, #333);
-}
-
-.show-btn span {
-  color: var(--cyan);
-}
-
-.quick-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.small-btn {
-  padding: 9px 12px;
-  background: #f5f5f8;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #333;
-}
-
-#result {
-  display: none;
-  margin-top: 22px;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 15px;
-  background: #fafafd;
-  overflow: hidden;
-}
-
-.result-heading {
-  font-size: 15px;
-  font-weight: 800;
-  margin-bottom: 12px;
-  overflow-wrap: anywhere;
-}
-
-.status {
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 10px;
-  background: #f0fdff;
-  color: #333;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.status.error {
-  color: #bd173a;
-  background: #fff0f3;
-}
-
-.status.success {
-  color: #17643c;
-  background: #edfff4;
-}
-
-.profile-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 15px;
-}
-
-.action-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 10px 13px;
-  border-radius: 9px;
-  text-decoration: none;
-  background: #17171b;
-  color: white;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.action-link.secondary {
-  color: #222;
-  background: #ededf2;
-}
-
-.embed-area {
-  width: 100%;
-  overflow-x: auto;
-  border-radius: 12px;
-}
-
-.tiktok-embed {
-  margin: 0 auto !important;
-  max-width: 605px !important;
-}
-
-.report-section {
-  margin-top: 28px;
-  padding: 23px;
-  border: 1px solid #fe2c5530;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #fff5f7, #f0fdff);
-}
-
-.report-heading {
-  text-align: center;
-  color: var(--pink);
-  font-size: 20px;
-  margin-bottom: 9px;
-}
-
-.report-description {
-  color: var(--muted);
-  text-align: center;
-  font-size: 13px;
-  line-height: 1.7;
-  margin-bottom: 19px;
-}
-
-.report-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.report-btn {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  min-height: 59px;
-  padding: 12px;
-  color: #303039;
-  background: white;
-  border: 1px solid #e6e1e6;
-  border-radius: 11px;
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-  transition: .2s;
-}
-
-.report-btn:hover {
-  border-color: var(--pink);
-  transform: translateY(-2px);
-}
-
-.report-btn .icon {
-  font-size: 21px;
-  flex-shrink: 0;
-}
-
-.report-main-btn {
-  display: block;
-  margin-top: 14px;
-  padding: 15px;
-  text-align: center;
-  color: white;
-  background: linear-gradient(100deg, var(--pink), #ff7189);
-  border-radius: 11px;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.report-note {
-  padding: 12px;
-  margin-top: 13px;
-  border-radius: 9px;
-  background: #ffffffb8;
-  color: #777;
-  font-size: 11px;
-  line-height: 1.7;
-}
-
-.footer {
-  padding-top: 22px;
-  text-align: center;
-  color: #888;
-  font-size: 11px;
-  line-height: 1.8;
-}
-
-.hidden {
-  display: none !important;
-}
-
-@media (max-width: 520px) {
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  
   body {
-    padding: 12px 9px;
+    background: linear-gradient(135deg, #000000, #25F4EE, #FE2C55);
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
   }
-
+  
   .container {
-    padding: 19px 14px;
-    border-radius: 18px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 700px;
   }
-
+  
+  h1 {
+    color: #FE2C55;
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 24px;
+  }
+  
+  p.subtitle {
+    color: #666;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 22px;
+  }
+  
   .search-box {
-    flex-direction: column;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
   }
-
-  .show-btn {
-    min-height: 48px;
-  }
-
-  .report-section {
-    padding: 15px 12px;
-  }
-
-  .report-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .quick-actions > button {
+  
+  input {
     flex: 1;
+    padding: 14px 16px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    transition: none !important;
-    scroll-behavior: auto !important;
+  
+  input:focus {
+    border-color: #25F4EE;
+    box-shadow: 0 0 10px rgba(37,244,238,0.4);
   }
-}
+  
+  button.show-btn {
+    padding: 14px 24px;
+    background: linear-gradient(90deg, #25F4EE, #FE2C55);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  button.show-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(254,44,85,0.4);
+  }
+  
+  #result {
+    margin-top: 10px;
+    display: none;
+  }
+  
+  .error {
+    color: #FE2C55;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    background: #fff0f3;
+    border-radius: 12px;
+    line-height: 1.6;
+  }
+  
+  /* ===== REPORT SECTION ===== */
+  .report-section {
+    margin-top: 30px;
+    padding: 25px;
+    background: linear-gradient(135deg, #fff5f7, #f0fdff);
+    border: 2px solid #FE2C5530;
+    border-radius: 16px;
+  }
+  
+  .report-section h2 {
+    color: #FE2C55;
+    font-size: 18px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  
+  .report-section p {
+    color: #666;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+  
+  .report-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .report-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 12px;
+    background: #fff;
+    color: #333;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: center;
+  }
+  
+  .report-btn:hover {
+    border-color: #FE2C55;
+    background: #fff5f7;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(254,44,85,0.15);
+  }
+  
+  .report-btn .icon {
+    font-size: 18px;
+  }
+  
+  .report-main-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(90deg, #FE2C55, #ff6b81);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    transition: 0.3s;
+    box-shadow: 0 6px 18px rgba(254,44,85,0.3);
+  }
+  
+  .report-main-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px rgba(254,44,85,0.4);
+  }
+  
+  .report-note {
+    font-size: 11px;
+    color: #888;
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.5;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+  }
+  
+  .tiktok-embed {
+    margin: 0 auto !important;
+    max-width: 100% !important;
+  }
+  
+  @media (max-width: 500px) {
+    .report-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 </head>
-
 <body>
-<main class="container">
 
-  <header>
-    <div class="brand">
-      <span class="brand-icon">🎵</span>
-      <h1>TikTok <span class="gradient-text">Profile Viewer</span></h1>
-    </div>
-    <p class="subtitle">
-      Enter a username or profile link to open a TikTok profile.
-      Use official TikTok resources to report genuine problems.
-    </p>
-  </header>
+<div class="container">
+  <h1>🎵 TikTok Profile Viewer</h1>
+  <p class="subtitle">Username dalo — profile + recent videos dekho</p>
 
-  <section aria-labelledby="viewerTitle">
-    <h2 class="section-label" id="viewerTitle">🔎 Find a TikTok Profile</h2>
+  <div class="search-box">
+    <input type="text" id="tiktokInput" 
+           placeholder="e.g. @khaby.lame ya https://tiktok.com/@username" 
+           autocomplete="off" />
+    <button class="show-btn" onclick="showProfile()">🔍 Show</button>
+  </div>
 
-    <form id="searchForm" class="search-box">
-      <input
-        id="tiktokInput"
-        type="text"
-        placeholder="@username or TikTok profile URL"
-        autocomplete="off"
-        maxlength="300"
-        aria-label="TikTok username or profile URL"
-      >
-      <button class="show-btn" id="showButton" type="submit">
-        <span>🔍</span> Show
-      </button>
-    </form>
+  <div id="result"></div>
 
-    <div class="quick-actions">
-      <button class="small-btn" type="button" id="clearButton">✕ Clear</button>
-      <button class="small-btn" type="button" id="openLastButton" disabled>
-        ↗ Open Profile
-      </button>
-    </div>
-
-    <div id="result" aria-live="polite"></div>
-  </section>
-
-  <section class="report-section" aria-labelledby="reportTitle">
-    <h2 class="report-heading" id="reportTitle">🚩 Report a Problem</h2>
-
-    <p class="report-description">
-      Select the relevant official TikTok resource below.
-      Follow TikTok's instructions to submit your own report.
-    </p>
+  <!-- ===== REPORT SECTION ===== -->
+  <div class="report-section">
+    <h2>🚩 Report a Problem</h2>
+    <p>TikTok par kisi bhi account, video, ya content ko report karne ke liye neeche diye gaye options use karein. Yeh TikTok ke official report pages hain.</p>
 
     <div class="report-grid">
-      <a class="report-btn"
-         href="https://www.tiktok.com/legal/report/feedback"
-         target="_blank" rel="noopener noreferrer">
-        <span class="icon">💬</span>
-        <span>General Feedback</span>
+      <a class="report-btn" href="https://www.tiktok.com/legal/report/feedback" target="_blank" rel="noopener">
+        <span class="icon">💬</span> General Feedback
       </a>
-
-      <a class="report-btn"
-         href="https://www.tiktok.com/legal/report/account"
-         target="_blank" rel="noopener noreferrer">
-        <span class="icon">👤</span>
-        <span>Report Account</span>
+      <a class="report-btn" href="https://www.tiktok.com/legal/report/account" target="_blank" rel="noopener">
+        <span class="icon">👤</span> Report Account
       </a>
-
-      <a class="report-btn"
-         href="https://www.tiktok.com/legal/report/video"
-         target="_blank" rel="noopener noreferrer">
-        <span class="icon">🎬</span>
-        <span>Report Video</span>
+      <a class="report-btn" href="https://www.tiktok.com/legal/report/video" target="_blank" rel="noopener">
+        <span class="icon">🎬</span> Report Video
       </a>
-
-      <a class="report-btn"
-         href="https://www.tiktok.com/legal/report/comment"
-         target="_blank" rel="noopener noreferrer">
-        <span class="icon">💭</span>
-        <span>Report Comment</span>
+      <a class="report-btn" href="https://www.tiktok.com/legal/report/comment" target="_blank" rel="noopener">
+        <span class="icon">💭</span> Report Comment
       </a>
-
-      <a class="report-btn"
-         href="https://www.tiktok.com/legal/report/privacy"
-         target="_blank" rel="noopener noreferrer">
-        <span class="icon">🔒</span>
-        <span>Privacy Issue</span>
+      <a class="report-btn" href="https://www.tiktok.com/legal/report/privacy" target="_blank" rel="noopener">
+        <span class="icon">🔒</span> Privacy Issue
       </a>
-
-      <a class="report-btn"
-         href="https://www.tiktok.com/legal/report/copyright"
-         target="_blank" rel="noopener noreferrer">
-        <span class="icon">©️</span>
-        <span>Copyright Issue</span>
+      <a class="report-btn" href="https://www.tiktok.com/legal/report/copyright" target="_blank" rel="noopener">
+        <span class="icon">©️</span> Copyright Issue
       </a>
     </div>
 
-    <a class="report-main-btn"
-       href="https://www.tiktok.com/legal/report/feedback"
-       target="_blank" rel="noopener noreferrer">
-      🚩 Open TikTok Official Feedback Page
+    <a class="report-main-btn" href="https://www.tiktok.com/legal/report/feedback" target="_blank" rel="noopener">
+      🚩 Open TikTok Official Report Page
     </a>
 
     <div class="report-note">
-      ℹ️ This website does not submit reports automatically.
-      The official TikTok page may require login or additional information.
-      Report only genuine violations and respect other users' privacy.
+      ℹ️ Yeh TikTok ke official report pages hain. Reports seedha TikTok ki team ko jaati hain. 
+      Aapki website kisi bhi report ko automatically submit nahi karti — yeh sirf aapko TikTok ke 
+      sahi page tak le jaati hai.
     </div>
-  </section>
+  </div>
+</div>
 
-  <footer class="footer">
-    TikTok Profile Viewer + Report System<br>
-    Independent utility. Not affiliated with or endorsed by TikTok.
-  </footer>
-
-</main>
-
+<!-- TikTok Official Embed Script -->
 <script async src="https://www.tiktok.com/embed.js"></script>
 
 <script>
-"use strict";
-
-const input = document.getElementById("tiktokInput");
-const result = document.getElementById("result");
-const form = document.getElementById("searchForm");
-const showButton = document.getElementById("showButton");
-const clearButton = document.getElementById("clearButton");
-const openLastButton = document.getElementById("openLastButton");
-
-let currentProfileUrl = "";
-
-function showMessage(message, type = "") {
-  result.replaceChildren();
-
-  const box = document.createElement("div");
-  box.className = "status" + (type ? " " + type : "");
-  box.textContent = message;
-
-  result.appendChild(box);
-  result.style.display = "block";
-}
-
-function getUsername(value) {
-  let text = value.trim();
-
-  if (!text) {
-    throw new Error("Please enter a TikTok username or profile link.");
-  }
-
-  // Accept a username, with or without @.
-  if (!text.includes("/") && !text.includes(":")) {
-    text = text.replace(/^@/, "");
-
-    if (!/^[a-zA-Z0-9._]{2,24}$/.test(text)) {
-      throw new Error("Invalid username. Please check the spelling.");
-    }
-
-    return text;
-  }
-
-  // For URLs, accept only TikTok domains.
-  let url;
-
-  try {
-    url = new URL(
-      /^https?:\/\//i.test(text) ? text : "https://" + text
-    );
-  } catch {
-    throw new Error("Invalid link. Please enter a valid TikTok profile URL.");
-  }
-
-  const host = url.hostname.toLowerCase();
-
-  if (
-    host !== "tiktok.com" &&
-    !host.endsWith(".tiktok.com")
-  ) {
-    throw new Error("Please enter a link from the official tiktok.com domain.");
-  }
-
-  const match = url.pathname.match(/^\/@([a-zA-Z0-9._]{2,24})\/?$/);
-
-  if (!match) {
-    throw new Error(
-      "Profile link samajh nahi aaya. Direct profile link use karein, jaise tiktok.com/@username."
-    );
-  }
-
-  return match[1];
-}
-
-function createAction(label, url, secondary = false) {
-  const link = document.createElement("a");
-  link.className = "action-link" + (secondary ? " secondary" : "");
-  link.textContent = label;
-  link.href = url;
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
-  return link;
-}
-
-function loadEmbedScript() {
-  // TikTok's embed script can be loaded again after new embeds
-  // are inserted. This may fail if TikTok blocks external requests.
-  const oldScript = document.getElementById("tiktokEmbedScript");
-
-  if (oldScript) oldScript.remove();
-
-  const script = document.createElement("script");
-  script.id = "tiktokEmbedScript";
-  script.src = "https://www.tiktok.com/embed.js";
-  script.async = true;
-
-  script.onerror = function () {
-    const note = document.createElement("div");
-    note.className = "status error";
-    note.textContent =
-      "TikTok embed load nahi hua. Aap Open Profile button se profile directly khol sakte hain.";
-    result.appendChild(note);
-  };
-
-  document.body.appendChild(script);
-}
-
 function showProfile() {
-  let username;
+  const input = document.getElementById('tiktokInput').value.trim();
+  const result = document.getElementById('result');
 
-  try {
-    username = getUsername(input.value);
-  } catch (error) {
-    currentProfileUrl = "";
-    openLastButton.disabled = true;
-    showMessage(error.message, "error");
+  if (!input) {
+    result.style.display = 'block';
+    result.innerHTML = '<div class="error">⚠️ Pehle username ya link dalo!</div>';
     return;
   }
 
-  const profileUrl = "https://www.tiktok.com/@" + username;
-  currentProfileUrl = profileUrl;
-  openLastButton.disabled = false;
+  let username = '';
+  if (input.includes('tiktok.com')) {
+    const match = input.match(/@([a-zA-Z0-9._]+)/);
+    if (match) username = match[1];
+  } else if (input.startsWith('@')) {
+    username = input.substring(1);
+  } else {
+    username = input;
+  }
 
-  result.replaceChildren();
-  result.style.display = "block";
+  username = username.replace(/[\/\s?]+.*$/, '').toLowerCase();
 
-  const heading = document.createElement("h3");
-  heading.className = "result-heading";
-  heading.textContent = "TikTok Profile: @" + username;
-  result.appendChild(heading);
+  if (!username) {
+    result.style.display = 'block';
+    result.innerHTML = '<div class="error">❌ Sahi username dalo!</div>';
+    return;
+  }
 
-  const status = document.createElement("div");
-  status.className = "status";
-  status.textContent =
-    "Profile embed load ho raha hai. Agar videos show na hon, Open Profile par click karein.";
-  result.appendChild(status);
+  const embedHTML = `
+    <blockquote class="tiktok-embed" 
+      cite="https://www.tiktok.com/@${username}" 
+      data-unique-id="${username}" 
+      data-embed-type="creator" 
+      style="max-width: 605px; min-width: 288px;">
+      <section>
+        <a target="_blank" href="https://www.tiktok.com/@${username}?refer=creator_embed">@${username}</a>
+      </section>
+    </blockquote>
+  `;
 
-  const actions = document.createElement("div");
-  actions.className = "profile-actions";
+  result.style.display = 'block';
+  result.innerHTML = embedHTML;
 
-  actions.appendChild(createAction("↗ Open Profile", profileUrl));
-  actions.appendChild(createAction("▶ Open TikTok", profileUrl, true));
-
-  result.appendChild(actions);
-
-  const embedArea = document.createElement("div");
-  embedArea.className = "embed-area";
-
-  const blockquote = document.createElement("blockquote");
-  blockquote.className = "tiktok-embed";
-  blockquote.setAttribute("cite", profileUrl);
-  blockquote.setAttribute("data-unique-id", username);
-  blockquote.setAttribute("data-embed-type", "creator");
-  blockquote.style.maxWidth = "605px";
-  blockquote.style.minWidth = "288px";
-
-  const section = document.createElement("section");
-  const profileLink = document.createElement("a");
-  profileLink.href = profileUrl;
-  profileLink.target = "_blank";
-  profileLink.rel = "noopener noreferrer";
-  profileLink.textContent = "@" + username;
-
-  section.appendChild(profileLink);
-  blockquote.appendChild(section);
-  embedArea.appendChild(blockquote);
-  result.appendChild(embedArea);
-
-  loadEmbedScript();
+  setTimeout(() => {
+    const oldScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
+    if (oldScript) oldScript.remove();
+    
+    const script = document.createElement('script');
+    script.src = 'https://www.tiktok.com/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
+  }, 100);
 }
 
-form.addEventListener("submit", function (event) {
-  event.preventDefault();
-  showProfile();
-});
-
-clearButton.addEventListener("click", function () {
-  input.value = "";
-  currentProfileUrl = "";
-  openLastButton.disabled = true;
-  result.replaceChildren();
-  result.style.display = "none";
-  input.focus();
-});
-
-openLastButton.addEventListener("click", function () {
-  if (!currentProfileUrl) return;
-
-  const opened = window.open(
-    currentProfileUrl,
-    "_blank",
-    "noopener,noreferrer"
-  );
-
-  if (!opened) {
-    showMessage(
-      "Browser ne popup block kiya ho sakta hai. Profile link ko dobara Show karke Open Profile par click karein.",
-      "error"
-    );
-  }
+document.getElementById('tiktokInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') showProfile();
 });
 </script>
 
