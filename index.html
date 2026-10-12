@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Report Center</title>
+<title>TikTok Viewer + Report System</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
   
@@ -13,59 +13,126 @@
     padding: 20px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
   }
   
   .container {
     background: #fff;
-    padding: 35px 30px;
+    padding: 30px;
     border-radius: 20px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     width: 100%;
-    max-width: 600px;
-  }
-  
-  .header {
-    text-align: center;
-    margin-bottom: 25px;
-  }
-  
-  .header .icon {
-    font-size: 50px;
-    display: block;
-    margin-bottom: 10px;
+    max-width: 700px;
   }
   
   h1 {
     color: #FE2C55;
-    font-size: 24px;
+    text-align: center;
     margin-bottom: 8px;
+    font-size: 24px;
   }
   
-  .header p {
+  p.subtitle {
     color: #666;
     font-size: 13px;
+    text-align: center;
+    margin-bottom: 22px;
+  }
+  
+  .search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  input {
+    flex: 1;
+    padding: 14px 16px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+  }
+  
+  input:focus {
+    border-color: #25F4EE;
+    box-shadow: 0 0 10px rgba(37,244,238,0.4);
+  }
+  
+  button.show-btn {
+    padding: 14px 24px;
+    background: linear-gradient(90deg, #25F4EE, #FE2C55);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  button.show-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(254,44,85,0.4);
+  }
+  
+  #result {
+    margin-top: 10px;
+    display: none;
+  }
+  
+  .error {
+    color: #FE2C55;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    background: #fff0f3;
+    border-radius: 12px;
+    line-height: 1.6;
+  }
+  
+  /* ===== REPORT SECTION ===== */
+  .report-section {
+    margin-top: 30px;
+    padding: 25px;
+    background: linear-gradient(135deg, #fff5f7, #f0fdff);
+    border: 2px solid #FE2C5530;
+    border-radius: 16px;
+  }
+  
+  .report-section h2 {
+    color: #FE2C55;
+    font-size: 18px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  
+  .report-section p {
+    color: #666;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 18px;
     line-height: 1.5;
   }
   
   .report-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 18px;
+    gap: 10px;
+    margin-bottom: 15px;
   }
   
   .report-btn {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 18px 12px;
+    gap: 8px;
+    padding: 14px 12px;
     background: #fff;
     color: #333;
-    border: 2px solid #eee;
-    border-radius: 12px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
     text-decoration: none;
     font-size: 13px;
     font-weight: bold;
@@ -77,12 +144,12 @@
   .report-btn:hover {
     border-color: #FE2C55;
     background: #fff5f7;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(254,44,85,0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(254,44,85,0.15);
   }
   
   .report-btn .icon {
-    font-size: 24px;
+    font-size: 18px;
   }
   
   .report-main-btn {
@@ -105,18 +172,23 @@
     box-shadow: 0 10px 25px rgba(254,44,85,0.4);
   }
   
-  .note {
+  .report-note {
     font-size: 11px;
     color: #888;
     text-align: center;
-    margin-top: 18px;
-    line-height: 1.6;
-    padding: 12px;
-    background: #f9f9f9;
+    margin-top: 12px;
+    line-height: 1.5;
+    padding: 10px;
+    background: #fff;
     border-radius: 8px;
   }
   
-  @media (max-width: 480px) {
+  .tiktok-embed {
+    margin: 0 auto !important;
+    max-width: 100% !important;
+  }
+  
+  @media (max-width: 500px) {
     .report-grid {
       grid-template-columns: 1fr;
     }
@@ -126,47 +198,118 @@
 <body>
 
 <div class="container">
-  <div class="header">
-    <span class="icon">🚩</span>
-    <h1>Report Center</h1>
-    <p>TikTok par kisi bhi account, video, ya content ko report karne ke liye neeche diye gaye options use karein.</p>
+  <h1>🎵 TikTok Profile Viewer</h1>
+  <p class="subtitle">Username dalo — profile + recent videos dekho</p>
+
+  <div class="search-box">
+    <input type="text" id="tiktokInput" 
+           placeholder="e.g. @khaby.lame ya https://tiktok.com/@username" 
+           autocomplete="off" />
+    <button class="show-btn" onclick="showProfile()">🔍 Show</button>
   </div>
 
-  <div class="report-grid">
-    <a class="report-btn" href="https://www.tiktok.com/legal/report/feedback" target="_blank" rel="noopener">
-      <span class="icon">💬</span>
-      General Feedback
-    </a>
-    <a class="report-btn" href="https://www.tiktok.com/legal/report/account" target="_blank" rel="noopener">
-      <span class="icon">👤</span>
-      Report Account
-    </a>
-    <a class="report-btn" href="https://www.tiktok.com/legal/report/video" target="_blank" rel="noopener">
-      <span class="icon">🎬</span>
-      Report Video
-    </a>
-    <a class="report-btn" href="https://www.tiktok.com/legal/report/comment" target="_blank" rel="noopener">
-      <span class="icon">💭</span>
-      Report Comment
-    </a>
-    <a class="report-btn" href="https://www.tiktok.com/legal/report/privacy" target="_blank" rel="noopener">
-      <span class="icon">🔒</span>
-      Privacy Issue
-    </a>
-    <a class="report-btn" href="https://www.tiktok.com/legal/report/copyright" target="_blank" rel="noopener">
-      <span class="icon">©️</span>
-      Copyright Issue
-    </a>
-  </div>
+  <div id="result"></div>
 
-  <a class="report-main-btn" href="https://www.tiktok.com/legal/report/feedback" target="_blank" rel="noopener">
-    🚩 Open TikTok Official Report Page
-  </a>
+  <!-- ===== REPORT SECTION ===== -->
+  <div class="report-section">
+    <h2>🚩 Report a Problem</h2>
+    <p>TikTok par kisi bhi account, video, ya content ko report karne ke liye neeche diye gaye options use karein. Yeh TikTok ke official report pages hain.</p>
 
-  <div class="note">
-    ℹ️ Yeh TikTok ke official report pages hain. Reports seedha TikTok ki team ko jaati hain.
+    <div class="report-grid">
+      <a class="report-btn" href="https://www.tiktok.com/legal/report/feedback" target="_blank" rel="noopener">
+        <span class="icon">💬</span> General Feedback
+      </a>
+      <a class="report-btn" href="https://www.tiktok.com/legal/report/account" target="_blank" rel="noopener">
+        <span class="icon">👤</span> Report Account
+      </a>
+      <a class="report-btn" href="https://www.tiktok.com/legal/report/video" target="_blank" rel="noopener">
+        <span class="icon">🎬</span> Report Video
+      </a>
+      <a class="report-btn" href="https://www.tiktok.com/legal/report/comment" target="_blank" rel="noopener">
+        <span class="icon">💭</span> Report Comment
+      </a>
+      <a class="report-btn" href="https://www.tiktok.com/legal/report/privacy" target="_blank" rel="noopener">
+        <span class="icon">🔒</span> Privacy Issue
+      </a>
+      <a class="report-btn" href="https://www.tiktok.com/legal/report/copyright" target="_blank" rel="noopener">
+        <span class="icon">©️</span> Copyright Issue
+      </a>
+    </div>
+
+    <a class="report-main-btn" href="https://www.tiktok.com/legal/report/feedback" target="_blank" rel="noopener">
+      🚩 Open TikTok Official Report Page
+    </a>
+
+    <div class="report-note">
+      ℹ️ Yeh TikTok ke official report pages hain. Reports seedha TikTok ki team ko jaati hain. 
+      Aapki website kisi bhi report ko automatically submit nahi karti — yeh sirf aapko TikTok ke 
+      sahi page tak le jaati hai.
+    </div>
   </div>
 </div>
+
+<!-- TikTok Official Embed Script -->
+<script async src="https://www.tiktok.com/embed.js"></script>
+
+<script>
+function showProfile() {
+  const input = document.getElementById('tiktokInput').value.trim();
+  const result = document.getElementById('result');
+
+  if (!input) {
+    result.style.display = 'block';
+    result.innerHTML = '<div class="error">⚠️ Pehle username ya link dalo!</div>';
+    return;
+  }
+
+  let username = '';
+  if (input.includes('tiktok.com')) {
+    const match = input.match(/@([a-zA-Z0-9._]+)/);
+    if (match) username = match[1];
+  } else if (input.startsWith('@')) {
+    username = input.substring(1);
+  } else {
+    username = input;
+  }
+
+  username = username.replace(/[\/\s?]+.*$/, '').toLowerCase();
+
+  if (!username) {
+    result.style.display = 'block';
+    result.innerHTML = '<div class="error">❌ Sahi username dalo!</div>';
+    return;
+  }
+
+  const embedHTML = `
+    <blockquote class="tiktok-embed" 
+      cite="https://www.tiktok.com/@${username}" 
+      data-unique-id="${username}" 
+      data-embed-type="creator" 
+      style="max-width: 605px; min-width: 288px;">
+      <section>
+        <a target="_blank" href="https://www.tiktok.com/@${username}?refer=creator_embed">@${username}</a>
+      </section>
+    </blockquote>
+  `;
+
+  result.style.display = 'block';
+  result.innerHTML = embedHTML;
+
+  setTimeout(() => {
+    const oldScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
+    if (oldScript) oldScript.remove();
+    
+    const script = document.createElement('script');
+    script.src = 'https://www.tiktok.com/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
+  }, 100);
+}
+
+document.getElementById('tiktokInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') showProfile();
+});
+</script>
 
 </body>
 </html>
