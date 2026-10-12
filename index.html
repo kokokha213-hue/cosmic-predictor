@@ -3,186 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TikTok Profile Viewer - Pro</title>
+<title>TikTok Profile Viewer</title>
 <style>
-  /* ===== THEMES (Feature #2) ===== */
-  :root {
-    --primary: #FE2C55;
-    --secondary: #25F4EE;
-    --bg-grad-1: #000000;
-    --bg-grad-2: #25F4EE;
-    --bg-grad-3: #FE2C55;
-    --card-bg: #ffffff;
-    --text: #111111;
-    --text-light: #666666;
-    --border: #dddddd;
-    --input-bg: #ffffff;
-  }
-
-  body.theme-blue {
-    --primary: #0088ff;
-    --secondary: #00d4ff;
-    --bg-grad-1: #001a33;
-    --bg-grad-2: #0088ff;
-    --bg-grad-3: #00d4ff;
-  }
-
-  body.theme-green {
-    --primary: #00c853;
-    --secondary: #64dd17;
-    --bg-grad-1: #001a0d;
-    --bg-grad-2: #00c853;
-    --bg-grad-3: #64dd17;
-  }
-
-  body.theme-purple {
-    --primary: #8e24aa;
-    --secondary: #e040fb;
-    --bg-grad-1: #1a0033;
-    --bg-grad-2: #8e24aa;
-    --bg-grad-3: #e040fb;
-  }
-
-  /* ===== DARK MODE (Feature #1) ===== */
-  body.dark {
-    --card-bg: #1a1a1a;
-    --text: #ffffff;
-    --text-light: #aaaaaa;
-    --border: #333333;
-    --input-bg: #2a2a2a;
-  }
-
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-
+  
   body {
-    background: linear-gradient(135deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3));
+    background: linear-gradient(135deg, #000000, #25F4EE, #FE2C55);
     min-height: 100vh;
     padding: 20px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    transition: background 0.5s ease;
   }
-
+  
   .container {
-    background: var(--card-bg);
+    background: #fff;
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     width: 100%;
-    max-width: 750px;
-    color: var(--text);
-    transition: background 0.3s ease, color 0.3s ease;
+    max-width: 700px;
   }
-
-  /* ===== HEADER ===== */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
+  
   h1 {
-    color: var(--primary);
-    font-size: 22px;
-    flex: 1;
-    min-width: 200px;
+    color: #FE2C55;
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 24px;
   }
-
-  .controls {
-    display: flex;
-    gap: 8px;
-  }
-
-  .icon-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
-    background: var(--input-bg);
-    color: var(--text);
-    font-size: 18px;
-    cursor: pointer;
-    transition: 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .icon-btn:hover {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
-    transform: scale(1.1);
-  }
-
+  
   p.subtitle {
-    color: var(--text-light);
+    color: #666;
     font-size: 13px;
-    margin-bottom: 20px;
+    text-align: center;
+    margin-bottom: 22px;
   }
-
-  /* ===== THEME PICKER (Feature #2) ===== */
-  .theme-picker {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 15px;
-    padding: 10px;
-    background: var(--input-bg);
-    border-radius: 10px;
-    border: 1px solid var(--border);
-  }
-
-  .theme-dot {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 3px solid transparent;
-    transition: 0.3s;
-  }
-
-  .theme-dot:hover, .theme-dot.active {
-    transform: scale(1.2);
-    border-color: var(--text);
-  }
-
-  .theme-dot[data-theme="default"] { background: linear-gradient(135deg, #25F4EE, #FE2C55); }
-  .theme-dot[data-theme="blue"]    { background: linear-gradient(135deg, #0088ff, #00d4ff); }
-  .theme-dot[data-theme="green"]   { background: linear-gradient(135deg, #00c853, #64dd17); }
-  .theme-dot[data-theme="purple"]  { background: linear-gradient(135deg, #8e24aa, #e040fb); }
-
-  /* ===== SEARCH BOX ===== */
+  
   .search-box {
     display: flex;
     gap: 10px;
-    margin-bottom: 15px;
-    position: relative;
+    margin-bottom: 20px;
   }
-
-  input[type="text"], input[type="number"], input[type="url"] {
+  
+  input {
     flex: 1;
     padding: 14px 16px;
-    border: 2px solid var(--border);
+    border: 2px solid #ddd;
     border-radius: 10px;
     font-size: 15px;
     outline: none;
     transition: 0.3s;
-    background: var(--input-bg);
-    color: var(--text);
   }
-
+  
   input:focus {
-    border-color: var(--secondary);
+    border-color: #25F4EE;
     box-shadow: 0 0 10px rgba(37,244,238,0.4);
   }
-
+  
   button.show-btn {
     padding: 14px 24px;
-    background: linear-gradient(90deg, var(--secondary), var(--primary));
+    background: linear-gradient(90deg, #25F4EE, #FE2C55);
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -190,812 +70,65 @@
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
-    white-space: nowrap;
   }
-
+  
   button.show-btn:hover {
     transform: scale(1.03);
     box-shadow: 0 8px 20px rgba(254,44,85,0.4);
   }
-
-  /* ===== HISTORY DROPDOWN (Feature #3) ===== */
-  .history-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    margin-top: 5px;
-    max-height: 250px;
-    overflow-y: auto;
-    z-index: 100;
-    display: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  }
-
-  .history-dropdown.show { display: block; }
-
-  .history-item {
-    padding: 12px 16px;
-    cursor: pointer;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    color: var(--text);
-  }
-
-  .history-item:hover { background: var(--input-bg); }
-  .history-item:last-child { border-bottom: none; }
-
-  .history-item .del {
-    color: var(--primary);
-    font-weight: bold;
-    padding: 0 8px;
-  }
-
-  /* ===== TABS ===== */
-  .tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    background: var(--input-bg);
-    padding: 5px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-  }
-
-  .tab {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    background: transparent;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: bold;
-    cursor: pointer;
-    color: var(--text-light);
-    transition: 0.3s;
-  }
-
-  .tab.active {
-    background: var(--card-bg);
-    color: var(--primary);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-
-  /* ===== RESULT ===== */
+  
   #result {
     margin-top: 10px;
     display: none;
   }
-
-  /* ===== LOADING SKELETON (Feature #9) ===== */
-  .skeleton {
-    background: linear-gradient(90deg, var(--input-bg) 25%, var(--border) 50%, var(--input-bg) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 12px;
-    margin-bottom: 10px;
-  }
-
-  @keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-
-  .skeleton-card { height: 180px; }
-  .skeleton-line { height: 20px; width: 60%; }
-
-  /* ===== PROFILE CARD ===== */
-  .profile-card {
-    background: linear-gradient(135deg, rgba(37,244,238,0.1), rgba(254,44,85,0.1));
-    border: 2px solid var(--secondary);
-    border-radius: 16px;
-    padding: 24px;
-    text-align: center;
-    margin-bottom: 20px;
-    animation: fadeIn 0.5s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .avatar {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--secondary), var(--primary));
-    color: #fff;
-    font-size: 40px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 15px;
-    box-shadow: 0 8px 20px rgba(254,44,85,0.3);
-  }
-
-  .username {
-    font-size: 20px;
-    font-weight: bold;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-
-  .tag {
-    display: inline-block;
-    background: var(--primary);
-    color: #fff;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: bold;
-    margin-bottom: 15px;
-  }
-
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-
-  .stat-box {
-    background: var(--input-bg);
-    padding: 12px 8px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-  }
-
-  .stat-box .num {
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--primary);
-  }
-
-  .stat-box .lbl {
-    font-size: 11px;
-    color: var(--text-light);
-    margin-top: 3px;
-  }
-
-  .action-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-    flex-wrap: wrap;
-  }
-
-  .action-btn {
-    flex: 1;
-    min-width: 100px;
-    padding: 11px;
-    background: var(--text);
-    color: var(--card-bg);
-    text-decoration: none;
-    border-radius: 10px;
-    font-weight: bold;
-    font-size: 13px;
-    transition: 0.2s;
-    text-align: center;
-    border: none;
-    cursor: pointer;
-  }
-
-  .action-btn:hover {
-    background: var(--primary);
-    color: #fff;
-  }
-
-  .action-btn.primary {
-    background: linear-gradient(90deg, var(--secondary), var(--primary));
-    color: #fff;
-  }
-
-  /* ===== FAVORITES (Feature #4) ===== */
-  .fav-btn {
-    background: transparent;
-    border: 2px solid var(--primary);
-    color: var(--primary);
-    padding: 8px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 13px;
-    margin: 5px;
-    transition: 0.3s;
-  }
-
-  .fav-btn:hover, .fav-btn.active {
-    background: var(--primary);
-    color: #fff;
-  }
-
-  /* ===== QR CODE (Feature #7) ===== */
-  .qr-box {
-    text-align: center;
-    padding: 15px;
-    background: #fff;
-    border-radius: 12px;
-    margin-top: 15px;
-    display: inline-block;
-  }
-
-  .qr-box img {
-    width: 150px;
-    height: 150px;
-    display: block;
-  }
-
-  /* ===== TOAST (Feature #10) ===== */
-  .toast {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: var(--text);
-    color: var(--card-bg);
-    padding: 14px 22px;
-    border-radius: 10px;
-    font-weight: bold;
-    font-size: 14px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    z-index: 9999;
-    animation: slideIn 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .toast.success { background: #00c853; color: #fff; }
-  .toast.error { background: #FE2C55; color: #fff; }
-
-  @keyframes slideIn {
-    from { transform: translateX(400px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-
-  /* ===== MULTI PROFILE ===== */
-  .multi-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-
-  @media (min-width: 600px) {
-    .multi-grid { grid-template-columns: 1fr 1fr; }
-  }
-
-  /* ===== ERROR ===== */
+  
   .error {
-    color: var(--primary);
+    color: #FE2C55;
     font-weight: bold;
     text-align: center;
     padding: 20px;
-    background: rgba(254,44,85,0.1);
+    background: #fff0f3;
     border-radius: 12px;
     line-height: 1.6;
   }
-
+  
   .info-note {
     font-size: 12px;
-    color: var(--text-light);
+    color: #888;
     text-align: center;
     margin-top: 15px;
     line-height: 1.5;
     padding: 10px;
-    background: var(--input-bg);
+    background: #f9f9f9;
     border-radius: 8px;
   }
-
+  
   .tiktok-embed {
     margin: 0 auto !important;
     max-width: 100% !important;
   }
-
-  /* ===== SECTION TITLE ===== */
-  .section-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: var(--text);
-    margin: 20px 0 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  /* ===== FAVORITES LIST ===== */
-  .fav-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
-  .fav-chip {
-    background: var(--input-bg);
-    border: 1px solid var(--border);
-    padding: 8px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    color: var(--text);
-    cursor: pointer;
-    transition: 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .fav-chip:hover {
-    background: var(--primary);
-    color: #fff;
-  }
-
-  .fav-chip .x {
-    font-weight: bold;
-    color: var(--primary);
-  }
-
-  .fav-chip:hover .x { color: #fff; }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- HEADER with Dark Mode + Controls -->
-  <div class="header">
-    <h1>🎵 TikTok Pro Viewer</h1>
-    <div class="controls">
-      <button class="icon-btn" id="darkToggle" onclick="toggleDark()" title="Dark Mode">🌙</button>
-      <button class="icon-btn" onclick="clearHistory()" title="Clear History">🗑️</button>
-    </div>
-  </div>
-  <p class="subtitle">Username ya link dalo — profile, videos aur bahut kuch!</p>
+  <h1>🎵 TikTok Profile Viewer</h1>
+  <p class="subtitle">Username dalo — profile + recent videos dekho</p>
 
-  <!-- THEME PICKER -->
-  <div class="theme-picker">
-    <div class="theme-dot active" data-theme="default" onclick="setTheme('default', this)"></div>
-    <div class="theme-dot" data-theme="blue" onclick="setTheme('blue', this)"></div>
-    <div class="theme-dot" data-theme="green" onclick="setTheme('green', this)"></div>
-    <div class="theme-dot" data-theme="purple" onclick="setTheme('purple', this)"></div>
-  </div>
-
-  <!-- TABS -->
-  <div class="tabs">
-    <button class="tab active" id="tabProfile" onclick="switchTab('profile')">👤 Profile</button>
-    <button class="tab" id="tabMulti" onclick="switchTab('multi')">👥 Multi</button>
-    <button class="tab" id="tabVideo" onclick="switchTab('video')">🎬 Video URL</button>
-    <button class="tab" id="tabFavs" onclick="switchTab('favs')">⭐ Favorites</button>
-  </div>
-
-  <!-- PROFILE TAB -->
-  <div id="profileBox">
-    <div class="search-box">
-      <input type="text" id="tiktokInput" 
-             placeholder="e.g. @khaby.lame ya https://tiktok.com/@username" 
-             autocomplete="off"
-             onfocus="showHistory()"
-             oninput="filterHistory()" />
-      <button class="show-btn" onclick="showProfile()">🔍 Show</button>
-      <div class="history-dropdown" id="historyDropdown"></div>
-    </div>
-  </div>
-
-  <!-- MULTI TAB -->
-  <div id="multiBox" style="display:none;">
-    <div style="margin-bottom:10px; color:var(--text-light); font-size:13px;">
-      Ek saath 2 profiles ke username daalo (comma se alag karo)
-    </div>
-    <div class="search-box">
-      <input type="text" id="multiInput" 
-             placeholder="e.g. @khaby.lame, @tiktok" 
-             autocomplete="off" />
-      <button class="show-btn" onclick="showMulti()">👥 Show</button>
-    </div>
-  </div>
-
-  <!-- VIDEO TAB -->
-  <div id="videoBox" style="display:none;">
-    <div style="margin-bottom:10px; color:var(--text-light); font-size:13px;">
-      TikTok video ka URL paste karo (embed hoga)
-    </div>
-    <div class="search-box">
-      <input type="url" id="videoInput" 
-             placeholder="e.g. https://www.tiktok.com/@user/video/123..." 
-             autocomplete="off" />
-      <button class="show-btn" onclick="showVideo()">🎬 Embed</button>
-    </div>
-  </div>
-
-  <!-- FAVORITES TAB -->
-  <div id="favsBox" style="display:none;">
-    <div class="section-title">⭐ Saved Favorites</div>
-    <div id="favList" class="fav-list"></div>
-    <div class="action-row" style="margin-top:15px;">
-      <button class="action-btn" onclick="exportFavs()">📤 Export JSON</button>
-      <button class="action-btn" onclick="document.getElementById('importFile').click()">📥 Import JSON</button>
-      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importFavs(event)" />
-    </div>
+  <div class="search-box">
+    <input type="text" id="tiktokInput" 
+           placeholder="e.g. @khaby.lame ya https://tiktok.com/@username" 
+           autocomplete="off" />
+    <button class="show-btn" onclick="showProfile()">🔍 Show</button>
   </div>
 
   <div id="result"></div>
 </div>
 
-<!-- TikTok Official Embed Script -->
+<!-- TikTok Official Embed Script - Sirf EK Dafa Load Hoga -->
 <script async src="https://www.tiktok.com/embed.js"></script>
 
 <script>
-/* ============================================================
-   FEATURE #1: DARK MODE
-   ============================================================ */
-function toggleDark() {
-  document.body.classList.toggle('dark');
-  const isDark = document.body.classList.contains('dark');
-  document.getElementById('darkToggle').textContent = isDark ? '☀️' : '🌙';
-  localStorage.setItem('darkMode', isDark);
-  toast(isDark ? '🌙 Dark mode ON' : '☀️ Light mode ON', 'success');
-}
-
-/* ============================================================
-   FEATURE #2: THEMES
-   ============================================================ */
-function setTheme(theme, el) {
-  document.body.classList.remove('theme-blue', 'theme-green', 'theme-purple');
-  if (theme !== 'default') document.body.classList.add('theme-' + theme);
-  
-  document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
-  el.classList.add('active');
-  localStorage.setItem('theme', theme);
-  toast('🎨 Theme changed!', 'success');
-}
-
-/* ============================================================
-   FEATURE #3: SEARCH HISTORY
-   ============================================================ */
-function getHistory() {
-  return JSON.parse(localStorage.getItem('searchHistory') || '[]');
-}
-
-function addHistory(username) {
-  let history = getHistory();
-  history = history.filter(h => h !== username);
-  history.unshift(username);
-  history = history.slice(0, 10);
-  localStorage.setItem('searchHistory', JSON.stringify(history));
-}
-
-function showHistory() {
-  const dropdown = document.getElementById('historyDropdown');
-  const history = getHistory();
-  if (history.length === 0) return;
-  
-  dropdown.innerHTML = history.map(h => `
-    <div class="history-item" onclick="pickHistory('${h}')">
-      <span>🔍 @${h}</span>
-      <span class="del" onclick="event.stopPropagation(); deleteHistory('${h}')">✕</span>
-    </div>
-  `).join('');
-  dropdown.classList.add('show');
-}
-
-function filterHistory() {
-  const val = document.getElementById('tiktokInput').value.toLowerCase();
-  const dropdown = document.getElementById('historyDropdown');
-  const history = getHistory().filter(h => h.includes(val));
-  
-  if (history.length === 0) {
-    dropdown.classList.remove('show');
-    return;
-  }
-  
-  dropdown.innerHTML = history.map(h => `
-    <div class="history-item" onclick="pickHistory('${h}')">
-      <span>🔍 @${h}</span>
-      <span class="del" onclick="event.stopPropagation(); deleteHistory('${h}')">✕</span>
-    </div>
-  `).join('');
-  dropdown.classList.add('show');
-}
-
-function pickHistory(username) {
-  document.getElementById('tiktokInput').value = '@' + username;
-  document.getElementById('historyDropdown').classList.remove('show');
-  showProfile();
-}
-
-function deleteHistory(username) {
-  let history = getHistory().filter(h => h !== username);
-  localStorage.setItem('searchHistory', JSON.stringify(history));
-  showHistory();
-  toast('🗑️ Deleted from history', 'success');
-}
-
-function clearHistory() {
-  if (!confirm('Saari history clear karni hai?')) return;
-  localStorage.removeItem('searchHistory');
-  toast('🗑️ History cleared!', 'success');
-}
-
-// Close dropdown on outside click
-document.addEventListener('click', function(e) {
-  const dropdown = document.getElementById('historyDropdown');
-  const input = document.getElementById('tiktokInput');
-  if (dropdown && !dropdown.contains(e.target) && e.target !== input) {
-    dropdown.classList.remove('show');
-  }
-});
-
-/* ============================================================
-   FEATURE #4: FAVORITES
-   ============================================================ */
-function getFavs() {
-  return JSON.parse(localStorage.getItem('favorites') || '[]');
-}
-
-function toggleFav(username) {
-  let favs = getFavs();
-  if (favs.includes(username)) {
-    favs = favs.filter(f => f !== username);
-    toast('💔 Removed from favorites', 'success');
-  } else {
-    favs.push(username);
-    toast('⭐ Added to favorites!', 'success');
-  }
-  localStorage.setItem('favorites', JSON.stringify(favs));
-  updateFavButton(username);
-  renderFavs();
-}
-
-function updateFavButton(username) {
-  const btn = document.getElementById('favBtn_' + username);
-  if (btn) {
-    const isFav = getFavs().includes(username);
-    btn.classList.toggle('active', isFav);
-    btn.textContent = isFav ? '⭐ Favorited' : '☆ Favorite';
-  }
-}
-
-function renderFavs() {
-  const list = document.getElementById('favList');
-  const favs = getFavs();
-  if (favs.length === 0) {
-    list.innerHTML = '<div style="color:var(--text-light); font-size:13px; padding:10px;">Koi favorite nahi. Profile search karke ⭐ Favorite dabao.</div>';
-    return;
-  }
-  list.innerHTML = favs.map(f => `
-    <div class="fav-chip" onclick="quickLoad('${f}')">
-      ⭐ @${f}
-      <span class="x" onclick="event.stopPropagation(); removeFav('${f}')">✕</span>
-    </div>
-  `).join('');
-}
-
-function removeFav(username) {
-  let favs = getFavs().filter(f => f !== username);
-  localStorage.setItem('favorites', JSON.stringify(favs));
-  renderFavs();
-  updateFavButton(username);
-  toast('💔 Removed!', 'success');
-}
-
-function quickLoad(username) {
-  switchTab('profile');
-  document.getElementById('tiktokInput').value = '@' + username;
-  showProfile();
-}
-
-/* ============================================================
-   FEATURE #5: COPY LINK (Feature #5)
-   ============================================================ */
-function copyLink(username) {
-  const url = `https://www.tiktok.com/@${username}`;
-  navigator.clipboard.writeText(url).then(() => {
-    toast('📋 Link copied!', 'success');
-  }).catch(() => {
-    // Fallback
-    const ta = document.createElement('textarea');
-    ta.value = url;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    toast('📋 Link copied!', 'success');
-  });
-}
-
-/* ============================================================
-   FEATURE #6: SHARE BUTTONS
-   ============================================================ */
-function shareTo(platform, username) {
-  const url = encodeURIComponent(`https://www.tiktok.com/@${username}`);
-  const text = encodeURIComponent(`Check out @${username} on TikTok!`);
-  let shareUrl = '';
-  
-  switch(platform) {
-    case 'whatsapp': shareUrl = `https://wa.me/?text=${text}%20${url}`; break;
-    case 'twitter': shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`; break;
-    case 'facebook': shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`; break;
-    case 'telegram': shareUrl = `https://t.me/share/url?url=${url}&text=${text}`; break;
-  }
-  
-  window.open(shareUrl, '_blank', 'width=600,height=500');
-  toast('📤 Sharing...', 'success');
-}
-
-/* ============================================================
-   FEATURE #7: QR CODE
-   ============================================================ */
-function getQRCode(username) {
-  const url = encodeURIComponent(`https://www.tiktok.com/@${username}`);
-  return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${url}`;
-}
-
-/* ============================================================
-   FEATURE #8: VIDEO URL EMBED
-   ============================================================ */
-function showVideo() {
-  const input = document.getElementById('videoInput').value.trim();
-  const result = document.getElementById('result');
-
-  if (!input) {
-    result.style.display = 'block';
-    result.innerHTML = '<div class="error">⚠️ Pehle video URL dalo!</div>';
-    return;
-  }
-
-  if (!input.includes('tiktok.com') || !input.includes('/video/')) {
-    result.style.display = 'block';
-    result.innerHTML = '<div class="error">❌ Sahi TikTok video URL dalo!<br><small>Format: https://www.tiktok.com/@user/video/123...</small></div>';
-    return;
-  }
-
-  result.style.display = 'block';
-  result.innerHTML = `
-    <div class="section-title">🎬 Video Embed</div>
-    <blockquote class="tiktok-embed" 
-      cite="${input}" 
-      data-video-id="${input.split('/video/')[1].split('?')[0]}" 
-      style="max-width: 605px; min-width: 325px;">
-      <section>
-        <a target="_blank" href="${input}">View on TikTok</a>
-      </section>
-    </blockquote>
-  `;
-
-  reloadTikTokEmbed();
-  toast('🎬 Video embed load ho raha hai!', 'success');
-}
-
-/* ============================================================
-   FEATURE #9: LOADING SKELETON
-   ============================================================ */
-function showSkeleton() {
-  const result = document.getElementById('result');
-  result.style.display = 'block';
-  result.innerHTML = `
-    <div class="skeleton skeleton-card"></div>
-    <div class="skeleton skeleton-line" style="margin: 15px auto;"></div>
-    <div class="skeleton skeleton-line" style="margin: 15px auto; width: 40%;"></div>
-  `;
-}
-
-/* ============================================================
-   FEATURE #10: TOAST NOTIFICATIONS
-   ============================================================ */
-function toast(msg, type = 'success') {
-  const t = document.createElement('div');
-  t.className = 'toast ' + type;
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => {
-    t.style.animation = 'slideIn 0.3s ease reverse';
-    setTimeout(() => t.remove(), 300);
-  }, 2500);
-}
-
-/* ============================================================
-   FEATURE #11: EXPORT/IMPORT FAVORITES
-   ============================================================ */
-function exportFavs() {
-  const favs = getFavs();
-  if (favs.length === 0) {
-    toast('❌ Koi favorite nahi!', 'error');
-    return;
-  }
-  const blob = new Blob([JSON.stringify(favs, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'tiktok-favorites.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  toast('📤 Exported!', 'success');
-}
-
-function importFavs(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const imported = JSON.parse(e.target.result);
-      if (!Array.isArray(imported)) throw new Error('Invalid format');
-      let favs = getFavs();
-      imported.forEach(f => { if (!favs.includes(f)) favs.push(f); });
-      localStorage.setItem('favorites', JSON.stringify(favs));
-      renderFavs();
-      toast('📥 Imported ' + imported.length + ' favorites!', 'success');
-    } catch (err) {
-      toast('❌ Invalid JSON file!', 'error');
-    }
-  };
-  reader.readAsText(file);
-  event.target.value = '';
-}
-
-/* ============================================================
-   FEATURE #12: CLEAR HISTORY (Already done above)
-
-   FEATURE #13: MULTIPLE PROFILES
-   ============================================================ */
-function showMulti() {
-  const input = document.getElementById('multiInput').value.trim();
-  const result = document.getElementById('result');
-
-  if (!input) {
-    result.style.display = 'block';
-    result.innerHTML = '<div class="error">⚠️ Kam se kam 2 usernames dalo (comma se alag)!</div>';
-    return;
-  }
-
-  const usernames = input.split(',').map(u => {
-    u = u.trim();
-    if (u.includes('tiktok.com')) {
-      const m = u.match(/@([a-zA-Z0-9._]+)/);
-      return m ? m[1] : null;
-    }
-    return u.replace(/^@/, '').replace(/[\/\s?]+.*$/, '').toLowerCase();
-  }).filter(Boolean).slice(0, 3);
-
-  if (usernames.length < 2) {
-    result.style.display = 'block';
-    result.innerHTML = '<div class="error">❌ Kam se kam 2 sahi usernames dalo!</div>';
-    return;
-  }
-
-  result.style.display = 'block';
-  result.innerHTML = `
-    <div class="section-title">👥 ${usernames.length} Profiles</div>
-    <div class="multi-grid">
-      ${usernames.map(u => `
-        <blockquote class="tiktok-embed" 
-          cite="https://www.tiktok.com/@${u}" 
-          data-unique-id="${u}" 
-          data-embed-type="creator" 
-          style="max-width: 100%; min-width: 288px;">
-          <section>
-            <a target="_blank" href="https://www.tiktok.com/@${u}?refer=creator_embed">@${u}</a>
-          </section>
-        </blockquote>
-      `).join('')}
-    </div>
-  `;
-
-  reloadTikTokEmbed();
-  toast('👥 ' + usernames.length + ' profiles load ho rahi hain!', 'success');
-}
-
-/* ============================================================
-   FEATURE #14: ANIMATIONS (Already in CSS)
-
-   ============================================================
-   MAIN: SHOW PROFILE
-   ============================================================ */
 function showProfile() {
   const input = document.getElementById('tiktokInput').value.trim();
   const result = document.getElementById('result');
@@ -1006,6 +139,7 @@ function showProfile() {
     return;
   }
 
+  // Username extract karo
   let username = '';
   if (input.includes('tiktok.com')) {
     const match = input.match(/@([a-zA-Z0-9._]+)/);
@@ -1024,105 +158,26 @@ function showProfile() {
     return;
   }
 
-  // History mein add karo
-  addHistory(username);
+  // TikTok ka official Creator Profile Embed code generate karo
+  const embedHTML = `
+    <blockquote class="tiktok-embed" 
+      cite="https://www.tiktok.com/@${username}" 
+      data-unique-id="${username}" 
+      data-embed-type="creator" 
+      style="max-width: 605px; min-width: 288px;">
+      <section>
+        <a target="_blank" href="https://www.tiktok.com/@${username}?refer=creator_embed">@${username}</a>
+      </section>
+    </blockquote>
+  `;
 
-  // Skeleton dikhao
-  showSkeleton();
+  result.style.display = 'block';
+  result.innerHTML = embedHTML + '<div class="info-note">ℹ️ Videos tab par click karke recent videos dekh sakte ho. Private accounts embed nahi hote.</div>';
 
-  // 500ms baad content
+  // TikTok script ko re-process karo (safely)
   setTimeout(() => {
-    result.innerHTML = `
-      <div class="profile-card">
-        <div class="avatar">${username.charAt(0).toUpperCase()}</div>
-        <div class="username">@${username}</div>
-        <span class="tag">TIKTOK CREATOR</span>
-
-        <div class="action-row">
-          <button class="fav-btn" id="favBtn_${username}" onclick="toggleFav('${username}')">
-            ${getFavs().includes(username) ? '⭐ Favorited' : '☆ Favorite'}
-          </button>
-        </div>
-
-        <div class="action-row">
-          <button class="action-btn primary" onclick="copyLink('${username}')">📋 Copy Link</button>
-          <a class="action-btn" href="https://www.tiktok.com/@${username}" target="_blank" rel="noopener">🎵 Open TikTok</a>
-        </div>
-
-        <div class="action-row">
-          <button class="action-btn" onclick="shareTo('whatsapp', '${username}')">💬 WhatsApp</button>
-          <button class="action-btn" onclick="shareTo('twitter', '${username}')">🐦 Twitter</button>
-          <button class="action-btn" onclick="shareTo('facebook', '${username}')">📘 Facebook</button>
-          <button class="action-btn" onclick="shareTo('telegram', '${username}')">✈️ Telegram</button>
-        </div>
-
-        <div style="margin-top:15px;">
-          <button class="action-btn" onclick="toggleQR('${username}')">📱 Show QR Code</button>
-        </div>
-        <div id="qr_${username}"></div>
-      </div>
-
-      <div class="section-title">📹 Recent Videos</div>
-      <blockquote class="tiktok-embed" 
-        cite="https://www.tiktok.com/@${username}" 
-        data-unique-id="${username}" 
-        data-embed-type="creator" 
-        style="max-width: 605px; min-width: 288px;">
-        <section>
-          <a target="_blank" href="https://www.tiktok.com/@${username}?refer=creator_embed">@${username}</a>
-        </section>
-      </blockquote>
-
-      <div class="info-note">
-        ℹ️ TikTok khud up to 10 recent videos dikhata hai. Private accounts embed nahi hote.
-      </div>
-    `;
-
-    reloadTikTokEmbed();
-    toast('✅ Profile loaded!', 'success');
-  }, 500);
-}
-
-/* ============================================================
-   QR CODE TOGGLE
-   ============================================================ */
-function toggleQR(username) {
-  const box = document.getElementById('qr_' + username);
-  if (box.innerHTML) {
-    box.innerHTML = '';
-  } else {
-    box.innerHTML = `
-      <div class="qr-box">
-        <img src="${getQRCode(username)}" alt="QR Code" />
-        <div style="font-size:12px; color:#666; margin-top:8px;">Scan to open @${username}</div>
-      </div>
-    `;
-  }
-}
-
-/* ============================================================
-   TAB SWITCH
-   ============================================================ */
-function switchTab(tab) {
-  document.getElementById('tabProfile').classList.toggle('active', tab === 'profile');
-  document.getElementById('tabMulti').classList.toggle('active', tab === 'multi');
-  document.getElementById('tabVideo').classList.toggle('active', tab === 'video');
-  document.getElementById('tabFavs').classList.toggle('active', tab === 'favs');
-
-  document.getElementById('profileBox').style.display = tab === 'profile' ? 'block' : 'none';
-  document.getElementById('multiBox').style.display = tab === 'multi' ? 'block' : 'none';
-  document.getElementById('videoBox').style.display = tab === 'video' ? 'block' : 'none';
-  document.getElementById('favsBox').style.display = tab === 'favs' ? 'block' : 'none';
-  document.getElementById('result').style.display = 'none';
-}
-
-/* ============================================================
-   TIKTOK EMBED RELOAD (Safe)
-   ============================================================ */
-function reloadTikTokEmbed() {
-  setTimeout(() => {
-    const oldScripts = document.querySelectorAll('script[src*="tiktok.com/embed.js"]');
-    oldScripts.forEach(s => s.remove());
+    const oldScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
+    if (oldScript) oldScript.remove();
     
     const script = document.createElement('script');
     script.src = 'https://www.tiktok.com/embed.js';
@@ -1131,28 +186,8 @@ function reloadTikTokEmbed() {
   }, 100);
 }
 
-/* ============================================================
-   INIT: Restore settings
-   ============================================================ */
-window.addEventListener('load', () => {
-  // Dark mode restore
-  if (localStorage.getItem('darkMode') === 'true') {
-    document.body.classList.add('dark');
-    document.getElementById('darkToggle').textContent = '☀️';
-  }
-  
-  // Theme restore
-  const theme = localStorage.getItem('theme') || 'default';
-  if (theme !== 'default') document.body.classList.add('theme-' + theme);
-  document.querySelectorAll('.theme-dot').forEach(d => {
-    d.classList.toggle('active', d.dataset.theme === theme);
-  });
-  
-  renderFavs();
-});
-
-// Enter key
-document.getElementById('tiktokInput').addEventListener('keypress', e => {
+// Enter key support
+document.getElementById('tiktokInput').addEventListener('keypress', function(e) {
   if (e.key === 'Enter') showProfile();
 });
 </script>
