@@ -1,560 +1,179 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Background Website Manager — Pro</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok Profile Viewer</title>
 <style>
-  :root {
-    color-scheme: dark;
-    --bg:#070c16; --panel:#0f1a2c; --panel2:#0b1322; --line:#22344f;
-    --text:#eaf2ff; --muted:#93a7c2; --cyan:#4fe3ff; --green:#5ee8a2;
-    --red:#ff7a92; --yellow:#ffcf6b; --purple:#a78bfa;
-    --shadow: 0 20px 60px rgba(0,0,0,0.35);
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
   }
-  [data-theme="light"] {
-    color-scheme: light;
-    --bg:#f3f6fb; --panel:#ffffff; --panel2:#f7f9fd; --line:#dbe3f0;
-    --text:#0d1728; --muted:#5b6b85; --cyan:#0891b2; --green:#16a34a;
-    --red:#dc2626; --yellow:#d97706; --purple:#7c3aed;
-    --shadow: 0 12px 40px rgba(20,40,80,0.10);
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    min-height:100vh;
-    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    background:
-      radial-gradient(900px 500px at 10% -10%, #12315b 0%, transparent 65%),
-      radial-gradient(700px 400px at 100% 0%, #122847 0%, transparent 65%),
-      var(--bg);
-    color: var(--text);
-    transition: background .3s, color .3s;
-  }
-  [data-theme="light"] body{
-    background:
-      radial-gradient(900px 500px at 10% -10%, #dbeafe 0%, transparent 65%),
-      radial-gradient(700px 400px at 100% 0%, #e0f2fe 0%, transparent 65%),
-      var(--bg);
-  }
-  .wrap{ width:min(1100px,100%); margin:auto; padding:26px 16px 60px; }
 
-  /* Header */
-  header{ display:flex; align-items:center; gap:14px; margin-bottom:22px; flex-wrap:wrap;}
-  .logo{
-    width:50px;height:50px;display:grid;place-items:center;border-radius:15px;
-    background:linear-gradient(145deg,#1f9bb8,#525de8);font-size:24px;
-    box-shadow:0 8px 30px #1a9bb833;
+  body {
+    background: linear-gradient(135deg, #000000, #25F4EE, #FE2C55);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
   }
-  h1{ margin:0;font-size:clamp(20px,3.5vw,28px);letter-spacing:-.6px;}
-  .sub{ color:var(--muted);margin:5px 0 0;font-size:13.5px;}
-  .header-actions{ margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;}
-  .icon-btn{
-    width:42px;height:42px;border-radius:12px;border:1px solid var(--line);
-    background:var(--panel);color:var(--text);font-size:17px;cursor:pointer;
-    display:grid;place-items:center;transition:.15s;
-  }
-  .icon-btn:hover{ border-color:var(--cyan); transform:translateY(-1px);}
 
-  /* Panel */
-  .panel{
-    border:1px solid var(--line);
-    background:linear-gradient(180deg, color-mix(in oklab, var(--panel) 96%, transparent), color-mix(in oklab, var(--panel2) 96%, transparent));
-    border-radius:22px;padding:22px;box-shadow:var(--shadow);
+  .container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
   }
-  .row{ display:flex; gap:10px; flex-wrap:wrap;}
-  label{ display:block;font-weight:650;font-size:13.5px;margin-bottom:8px;color:var(--text);}
-  input[type="url"], input[type="text"], select{
-    min-width:0;flex:1;background:var(--panel2);border:1px solid var(--line);
-    border-radius:12px;padding:13px 15px;color:var(--text);font-size:14.5px;outline:none;
-    transition:.15s;
-  }
-  input:focus, select:focus{ border-color:var(--cyan); box-shadow:0 0 0 3px color-mix(in oklab, var(--cyan) 20%, transparent);}
-  button{
-    border:0;border-radius:12px;padding:12px 16px;font-weight:750;font-size:13.5px;
-    cursor:pointer;transition:transform .15s,opacity .15s,background .2s;
-    white-space:nowrap;
-  }
-  button:hover:not(:disabled){ transform:translateY(-1px);}
-  button:disabled{ opacity:.45;cursor:not-allowed;}
-  .primary{ background:var(--cyan); color:#06202a;}
-  .secondary{ background:color-mix(in oklab, var(--panel) 70%, transparent); color:var(--text); border:1px solid var(--line);}
-  .danger{ background:color-mix(in oklab, var(--red) 20%, transparent); color:var(--red); border:1px solid color-mix(in oklab, var(--red) 45%, transparent);}
-  .verify{ background:color-mix(in oklab, var(--green) 18%, transparent); color:var(--green); border:1px solid color-mix(in oklab, var(--green) 45%, transparent);}
-  .ghost{ background:transparent; border:1px solid var(--line); color:var(--muted);}
-  .ghost:hover{ color:var(--text);}
 
-  .help{ color:var(--muted);font-size:12px;line-height:1.55;margin:10px 0 0;}
-  .statusbar{ display:flex;justify-content:space-between;gap:12px;align-items:center;margin:18px 0 12px;flex-wrap:wrap;}
-  .pill{
-    display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);
-    background:color-mix(in oklab, var(--panel2) 90%, transparent);
-    padding:7px 11px;border-radius:999px;font-size:12px;color:var(--text);
+  h1 {
+    color: #FE2C55;
+    margin-bottom: 10px;
+    font-size: 26px;
   }
-  .dot{ width:7px;height:7px;border-radius:50%;background:#8194ae;}
-  .dot.green{ background:var(--green);box-shadow:0 0 10px color-mix(in oklab, var(--green) 60%, transparent);}
-  .dot.red{ background:var(--red);box-shadow:0 0 10px color-mix(in oklab, var(--red) 60%, transparent);}
-  .dot.yellow{ background:var(--yellow);box-shadow:0 0 10px color-mix(in oklab, var(--yellow) 60%, transparent);}
 
-  /* Add bar */
-  .addbar{ display:flex; gap:10px; flex-wrap:wrap;}
-  .addbar input{ flex:1; min-width:220px;}
-  .toolbar{
-    display:flex; gap:8px; flex-wrap:wrap; align-items:center;
-    margin-top:14px; padding-top:14px; border-top:1px dashed var(--line);
+  p.subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
   }
-  .toolbar .spacer{ flex:1;}
 
-  /* Sites list */
-  .sites{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:18px;}
-  .site{
-    border:1px solid var(--line); border-radius:18px; overflow:hidden;
-    background:var(--panel2); box-shadow:var(--shadow);
-    transition:transform .15s, border-color .2s;
+  input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
   }
-  .site.dragging{ opacity:.5;}
-  .site.dragover{ border-color:var(--cyan);}
-  .site-head{
-    padding:14px 16px; display:flex; justify-content:space-between;
-    align-items:center; gap:12px; background:color-mix(in oklab, var(--panel) 90%, transparent);
-    border-bottom:1px solid var(--line); cursor:grab;
-  }
-  .site-head:active{ cursor:grabbing;}
-  .site-meta{ min-width:0; flex:1;}
-  .site-title{ font-weight:750; overflow-wrap:anywhere; display:flex; align-items:center; gap:8px;}
-  .site-fav{ width:16px;height:16px;border-radius:4px;background:var(--line); flex:0 0 auto;}
-  .site-url{ color:var(--muted); font-size:12px; overflow-wrap:anywhere; margin-top:4px;}
-  .site-body{ padding:12px 15px; }
-  .actions{ display:flex; gap:8px; flex-wrap:wrap;}
-  .viewer{
-    position:relative; min-height:200px; display:grid; place-items:center;
-    padding:24px; text-align:center; background:linear-gradient(135deg,#0a1322,#0b1729);
-  }
-  [data-theme="light"] .viewer{ background:linear-gradient(135deg,#eef4ff,#e6eefc);}
-  .placeholder{ max-width:520px;color:var(--muted);font-size:13.5px;line-height:1.65;}
-  .placeholder strong{ color:var(--text);display:block;font-size:16px;margin-bottom:6px;}
-  iframe{ width:100%; height:520px; border:0; background:#fff; display:block;}
-  .log{ color:var(--muted);font-size:11.5px;margin:10px 15px 14px;min-height:16px;}
-  .empty{
-    text-align:center; padding:48px 20px; color:var(--muted); border:1px dashed var(--line);
-    border-radius:18px; background:color-mix(in oklab, var(--panel2) 60%, transparent);
-  }
-  .empty strong{ display:block; color:var(--text); font-size:16px; margin-bottom:6px;}
 
-  .note{
-    margin-top:16px;padding:13px 15px;border-radius:13px;
-    background:color-mix(in oklab, var(--yellow) 14%, transparent);
-    border:1px solid color-mix(in oklab, var(--yellow) 40%, transparent);
-    color:color-mix(in oklab, var(--yellow) 90%, var(--text));
-    font-size:12px;line-height:1.6;
+  input:focus {
+    border-color: #25F4EE;
+    box-shadow: 0 0 10px rgba(37,244,238,0.4);
   }
-  .toast{
-    position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
-    background:var(--panel); border:1px solid var(--line); color:var(--text);
-    padding:12px 18px; border-radius:12px; font-size:13px; font-weight:600;
-    box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:.25s; z-index:99;
+
+  button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 14px;
+    background: linear-gradient(90deg, #25F4EE, #FE2C55);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
   }
-  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0);}
-  @media(max-width:620px){
-    .panel{padding:16px}
-    .addbar input{ min-width:100%;}
-    .addbar button{ flex:1;}
-    .site-head{ flex-direction:column; align-items:flex-start;}
-    .actions button{ flex:1;}
-    iframe{ height:400px;}
+
+  button:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(254,44,85,0.4);
+  }
+
+  #result {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 12px;
+    background: #f9f9f9;
+    display: none;
+    word-wrap: break-word;
+  }
+
+  #result a {
+    color: #FE2C55;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 16px;
+  }
+
+  #result a:hover {
+    text-decoration: underline;
+  }
+
+  .loading {
+    color: #25F4EE;
+    font-weight: bold;
+  }
+
+  iframe {
+    margin-top: 15px;
+    width: 100%;
+    max-width: 340px;
+    height: 580px;
+    border: none;
+    border-radius: 12px;
   }
 </style>
 </head>
 <body>
-<main class="wrap">
-  <header>
-    <div class="logo" aria-hidden="true">◈</div>
-    <div>
-      <h1>Background Website Manager <span style="font-size:11px;color:var(--cyan);vertical-align:middle;">PRO</span></h1>
-      <p class="sub">Add multiple URLs, control visibility, auto-refresh, save sessions — all in one place.</p>
-    </div>
-    <div class="header-actions">
-      <button class="icon-btn" id="themeBtn" title="Toggle theme">🌙</button>
-      <button class="icon-btn" id="exportBtn" title="Export sites (JSON)">⬇</button>
-      <button class="icon-btn" id="importBtn" title="Import sites (JSON)">⬆</button>
-      <input type="file" id="importFile" accept="application/json" hidden>
-    </div>
-  </header>
 
-  <section class="panel">
-    <label for="urlInput">Add a website URL</label>
-    <div class="addbar">
-      <input id="urlInput" type="url" placeholder="https://example.com" autocomplete="url" spellcheck="false">
-      <button class="primary" id="addBtn">+ ADD</button>
-    </div>
-    <p class="help">Full URL (https:// preferred). Press <kbd>Enter</kbd> to add quickly. Sites are saved automatically in your browser.</p>
+<div class="container">
+  <h1>🎵 TikTok Profile Viewer</h1>
+  <p class="subtitle">Username ya link dalo aur direct dekho</p>
 
-    <div class="toolbar">
-      <span class="pill"><span class="dot" id="stateDot"></span><span id="stateText">Ready</span></span>
-      <span class="pill">Sites: <strong id="countEl">0</strong></span>
-      <span class="pill">Session: <strong id="timer">10:00</strong></span>
-      <span class="spacer"></span>
-      <button class="ghost" id="showAllBtn">Show all</button>
-      <button class="ghost" id="hideAllBtn">Hide all</button>
-      <button class="ghost danger" id="clearAllBtn">Clear all</button>
-    </div>
+  <input type="text" id="tiktokInput" placeholder="e.g. @username ya https://tiktok.com/@username" />
 
-    <div class="note">
-      <strong>Browser limitation:</strong> many external sites block embedding (X-Frame-Options / CSP).
-      A hidden iframe is <b>not</b> a real background browser — the page cannot confirm that a remote page or video is actively running.
-      For true background execution, use a Chrome Extension or Electron app.
-    </div>
-  </section>
+  <button onclick="showProfile()">Show Profile</button>
 
-  <section class="sites" id="sites"></section>
-</main>
-
-<div class="toast" id="toast"></div>
+  <div id="result"></div>
+</div>
 
 <script>
-(() => {
-  const $ = id => document.getElementById(id);
-  const STORAGE_KEY = 'bwm.sites.v1';
-  const THEME_KEY = 'bwm.theme.v1';
+  function showProfile() {
+    const input = document.getElementById('tiktokInput').value.trim();
+    const result = document.getElementById('result');
 
-  const sitesEl = $('sites');
-  const input = $('urlInput');
-  const addBtn = $('addBtn');
-  const stateDot = $('stateDot');
-  const stateText = $('stateText');
-  const countEl = $('countEl');
-  const timerEl = $('timer');
-  const toastEl = $('toast');
-
-  let sites = [];        // { id, url, title, visible }
-  let startedAt = Date.now();
-  let timerInterval = null;
-  let dragId = null;
-
-  /* ---------- Utilities ---------- */
-  const uid = () => Math.random().toString(36).slice(2,10);
-  const safeHost = (u) => { try { return new URL(u).hostname; } catch { return u; } };
-
-  function toast(msg, ms=2200){
-    toastEl.textContent = msg;
-    toastEl.classList.add('show');
-    clearTimeout(toast._t);
-    toast._t = setTimeout(()=>toastEl.classList.remove('show'), ms);
-  }
-
-  function setState(text, color=''){
-    stateText.textContent = text;
-    stateDot.className = 'dot' + (color ? ' ' + color : '');
-  }
-
-  function normalizeUrl(value){
-    let raw = String(value||'').trim();
-    if (!raw) throw new Error('Please enter a website URL.');
-    if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
-    const parsed = new URL(raw);
-    if (!['http:','https:'].includes(parsed.protocol)) throw new Error('Only HTTP/HTTPS links are supported.');
-    return parsed.href;
-  }
-
-  /* ---------- Persistence ---------- */
-  function save(){
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(sites.map(s => ({...s, visible:false})))); } catch {}
-  }
-  function load(){
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return [];
-      const arr = JSON.parse(raw);
-      if (!Array.isArray(arr)) return [];
-      return arr.filter(s => s && s.url).map(s => ({
-        id: s.id || uid(),
-        url: s.url,
-        title: s.title || safeHost(s.url),
-        visible: false
-      }));
-    } catch { return []; }
-  }
-
-  /* ---------- Theme ---------- */
-  function applyTheme(t){
-    document.documentElement.dataset.theme = t;
-    $('themeBtn').textContent = t === 'light' ? '☀' : '🌙';
-    try { localStorage.setItem(THEME_KEY, t); } catch {}
-  }
-  $('themeBtn').addEventListener('click', () => {
-    const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
-    applyTheme(next);
-  });
-
-  /* ---------- Timer ---------- */
-  function startTimer(){
-    startedAt = Date.now();
-    clearInterval(timerInterval);
-    function tick(){
-      const rem = Math.max(0, 10*60*1000 - (Date.now() - startedAt));
-      const m = String(Math.floor(rem/60000)).padStart(2,'0');
-      const s = String(Math.floor((rem%60000)/1000)).padStart(2,'0');
-      timerEl.textContent = `${m}:${s}`;
-      if (rem === 0) { clearInterval(timerInterval); toast('10-minute session timer finished.'); }
-    }
-    tick();
-    timerInterval = setInterval(tick, 250);
-  }
-
-  /* ---------- Render ---------- */
-  function render(){
-    countEl.textContent = sites.length;
-
-    if (!sites.length){
-      sitesEl.innerHTML = `<div class="empty"><strong>No websites yet</strong>Add your first URL above to get started.</div>`;
+    if (!input) {
+      result.style.display = 'block';
+      result.innerHTML = '<span style="color:#FE2C55;">⚠️ Pehle username ya link dalo!</span>';
       return;
     }
 
-    sitesEl.innerHTML = '';
-    sites.forEach((s, i) => {
-      const el = document.createElement('article');
-      el.className = 'site';
-      el.draggable = true;
-      el.dataset.id = s.id;
-      el.innerHTML = `
-        <div class="site-head" title="Drag to reorder">
-          <div class="site-meta">
-            <div class="site-title">
-              <img class="site-fav" alt="" src="https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(safeHost(s.url))}">
-              <span>${escapeHtml(s.title || safeHost(s.url))}</span>
-            </div>
-            <div class="site-url">${escapeHtml(s.url)}</div>
-          </div>
-          <span class="pill" data-role="vis">HIDDEN</span>
-        </div>
-        <div class="site-body">
-          <div class="actions">
-            <button class="primary" data-act="show">SHOW WEB</button>
-            <button class="secondary" data-act="hide">HIDE WEB</button>
-            <button class="verify" data-act="verify">VERIFY</button>
-            <button class="ghost" data-act="reload">↻</button>
-            <button class="danger" data-act="remove">REMOVE</button>
-          </div>
-          <div class="viewer" data-role="viewer" hidden>
-            <div class="placeholder">
-              <strong>Website is hidden</strong>
-              Press SHOW WEB to try opening the page here.
-            </div>
-            <iframe hidden referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
-          </div>
-          <div class="log" data-role="log">Ready.</div>
-        </div>
-      `;
-      sitesEl.appendChild(el);
-    });
+    let username = '';
 
-    // restore visibility state
-    sites.forEach(s => {
-      const el = sitesEl.querySelector(`.site[data-id="${s.id}"]`);
-      if (!el) return;
-      if (s.visible) activateSite(s.id, true);
-    });
-  }
+    // Agar full link diya hai
+    if (input.includes('tiktok.com')) {
+      const match = input.match(/@([a-zA-Z0-9._]+)/);
+      if (match) username = match[1];
+    } 
+    // Agar @username diya hai
+    else if (input.startsWith('@')) {
+      username = input.substring(1);
+    } 
+    // Agar sirf username diya hai
+    else {
+      username = input;
+    }
 
-  function escapeHtml(str){
-    return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
-
-  function getSite(id){ return sites.find(s => s.id === id); }
-  function getEl(id){ return sitesEl.querySelector(`.site[data-id="${id}"]`); }
-  function log(id, msg){
-    const el = getEl(id); if (!el) return;
-    el.querySelector('[data-role="log"]').textContent = msg;
-  }
-  function setVisPill(id){
-    const el = getEl(id); const s = getSite(id); if (!el || !s) return;
-    const pill = el.querySelector('[data-role="vis"]');
-    pill.textContent = s.visible ? 'SHOWING' : 'HIDDEN';
-    pill.style.color = s.visible ? 'var(--green)' : '';
-    pill.style.borderColor = s.visible ? 'color-mix(in oklab, var(--green) 45%, transparent)' : '';
-  }
-
-  /* ---------- Actions ---------- */
-  function addSite(url){
-    const norm = normalizeUrl(url);
-    if (sites.some(s => s.url === norm)){
-      toast('That URL is already added.');
+    if (!username) {
+      result.style.display = 'block';
+      result.innerHTML = '<span style="color:#FE2C55;">❌ Sahi username ya link dalo!</span>';
       return;
     }
-    sites.push({ id: uid(), url: norm, title: safeHost(norm), visible: false });
-    save(); render();
-    toast('Website added.');
-    setState('Website added', '');
+
+    const profileUrl = `https://www.tiktok.com/@${username}`;
+
+    result.style.display = 'block';
+    result.innerHTML = `
+      <p style="color:#333; margin-bottom:10px;">✅ Profile:</p>
+      <a href="${profileUrl}" target="_blank">${profileUrl}</a>
+      <br><br>
+      <iframe src="${profileUrl}" allowfullscreen></iframe>
+    `;
   }
 
-  function activateSite(id, silent=false){
-    const s = getSite(id); const el = getEl(id); if (!s || !el) return;
-    const viewer = el.querySelector('[data-role="viewer"]');
-    const iframe = viewer.querySelector('iframe');
-    const ph = viewer.querySelector('.placeholder');
-
-    s.visible = true;
-    viewer.hidden = false;
-    iframe.hidden = false;
-    ph.hidden = true;
-    iframe.src = s.url;
-    setVisPill(id);
-    if (!silent) log(id, 'Opening page in embedded frame. If blank, site likely blocks embedding.');
-  }
-
-  function deactivateSite(id, msg='Website hidden. Background execution is not guaranteed.'){
-    const s = getSite(id); const el = getEl(id); if (!s || !el) return;
-    const viewer = el.querySelector('[data-role="viewer"]');
-    const iframe = viewer.querySelector('iframe');
-    const ph = viewer.querySelector('.placeholder');
-
-    s.visible = false;
-    iframe.src = 'about:blank';
-    iframe.hidden = true;
-    viewer.hidden = true;
-    ph.hidden = false;
-    setVisPill(id);
-    save();
-    log(id, msg);
-  }
-
-  function removeSite(id){
-    const el = getEl(id);
-    if (el){ const f = el.querySelector('iframe'); if (f) f.src='about:blank'; }
-    sites = sites.filter(s => s.id !== id);
-    save(); render();
-    toast('Website removed.');
-  }
-
-  async function verifySite(id){
-    const s = getSite(id); if (!s) return;
-    log(id, 'Checking reachability…');
-    setState('Checking…','');
-    try {
-      await fetch(s.url, { mode:'no-cors', cache:'no-store' });
-      log(id, 'Request sent. Browser security prevents confirming content or video playback.');
-      setState('Request attempted','green');
-    } catch {
-      log(id, 'Could not verify from this browser (network / security rules).');
-      setState('Unverified','red');
-    }
-  }
-
-  /* ---------- Events ---------- */
-  addBtn.addEventListener('click', () => {
-    try { addSite(input.value); input.value=''; input.focus(); }
-    catch(e){ toast(e.message || 'Invalid URL'); setState('Invalid URL','red'); }
+  // Enter key support
+  document.getElementById('tiktokInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') showProfile();
   });
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') addBtn.click(); });
-
-  sitesEl.addEventListener('click', e => {
-    const btn = e.target.closest('button[data-act]');
-    if (!btn) return;
-    const siteEl = btn.closest('.site');
-    const id = siteEl?.dataset.id; if (!id) return;
-    const act = btn.dataset.act;
-    if (act === 'show') activateSite(id);
-    if (act === 'hide') deactivateSite(id);
-    if (act === 'verify') verifySite(id);
-    if (act === 'remove') removeSite(id);
-    if (act === 'reload'){ const s=getSite(id); if(s && s.visible) activateSite(id,true); else toast('Show the site first.'); }
-  });
-
-  /* ---------- Drag & drop reorder ---------- */
-  sitesEl.addEventListener('dragstart', e => {
-    const el = e.target.closest('.site'); if (!el) return;
-    dragId = el.dataset.id; el.classList.add('dragging');
-  });
-  sitesEl.addEventListener('dragend', e => {
-    const el = e.target.closest('.site'); if (el) el.classList.remove('dragging');
-    sitesEl.querySelectorAll('.dragover').forEach(n => n.classList.remove('dragover'));
-    dragId = null;
-  });
-  sitesEl.addEventListener('dragover', e => {
-    e.preventDefault();
-    const el = e.target.closest('.site'); if (!el || el.dataset.id === dragId) return;
-    el.classList.add('dragover');
-  });
-  sitesEl.addEventListener('dragleave', e => {
-    const el = e.target.closest('.site'); if (el) el.classList.remove('dragover');
-  });
-  sitesEl.addEventListener('drop', e => {
-    e.preventDefault();
-    const target = e.target.closest('.site'); if (!target || !dragId) return;
-    const fromIdx = sites.findIndex(s => s.id === dragId);
-    const toIdx = sites.findIndex(s => s.id === target.dataset.id);
-    if (fromIdx < 0 || toIdx < 0) return;
-    const [moved] = sites.splice(fromIdx, 1);
-    sites.splice(toIdx, 0, moved);
-    save(); render();
-  });
-
-  /* ---------- Bulk actions ---------- */
-  $('showAllBtn').addEventListener('click', () => sites.forEach(s => activateSite(s.id, true)));
-  $('hideAllBtn').addEventListener('click', () => sites.forEach(s => deactivateSite(s.id, 'Hidden.')));
-  $('clearAllBtn').addEventListener('click', () => {
-    if (!sites.length) return;
-    if (!confirm('Remove all saved websites?')) return;
-    sites = []; save(); render(); toast('All sites cleared.');
-  });
-
-  /* ---------- Export / Import ---------- */
-  $('exportBtn').addEventListener('click', () => {
-    const data = JSON.stringify(sites.map(({id,url,title}) => ({id,url,title})), null, 2);
-    const blob = new Blob([data], { type:'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `bwm-sites-${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-    toast('Exported.');
-  });
-  $('importBtn').addEventListener('click', () => $('importFile').click());
-  $('importFile').addEventListener('change', async e => {
-    const f = e.target.files?.[0]; if (!f) return;
-    try {
-      const arr = JSON.parse(await f.text());
-      if (!Array.isArray(arr)) throw new Error('Invalid file');
-      let added = 0;
-      arr.forEach(item => {
-        try {
-          const norm = normalizeUrl(item.url);
-          if (!sites.some(s => s.url === norm)){
-            sites.push({ id: item.id || uid(), url: norm, title: item.title || safeHost(norm), visible:false });
-            added++;
-          }
-        } catch {}
-      });
-      save(); render();
-      toast(`Imported ${added} site(s).`);
-    } catch { toast('Import failed: invalid JSON.'); }
-    e.target.value = '';
-  });
-
-  /* ---------- Keyboard shortcuts ---------- */
-  document.addEventListener('keydown', e => {
-    if (e.target.matches('input,textarea')) return;
-    if (e.key === '/'){ e.preventDefault(); input.focus(); }
-    if (e.key.toLowerCase() === 'h'){ sites.forEach(s => deactivateSite(s.id, 'Hidden via shortcut.')); }
-    if (e.key.toLowerCase() === 's'){ sites.forEach(s => activateSite(s.id, true)); }
-    if (e.key.toLowerCase() === 't'){ $('themeBtn').click(); }
-  });
-
-  /* ---------- Init ---------- */
-  (function init(){
-    const savedTheme = (() => { try { return localStorage.getItem(THEME_KEY); } catch { return null; } })()
-      || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-    applyTheme(savedTheme);
-
-    sites = load();
-    render();
-    startTimer();
-    setState(sites.length ? `${sites.length} site(s) loaded` : 'Ready', sites.length ? 'green' : '');
-
-    // Save on unload (visibility cleared)
-    window.addEventListener('beforeunload', save);
-  })();
-})();
 </script>
+
 </body>
 </html>
