@@ -150,9 +150,15 @@
     color: #FE2C55;
     font-weight: bold;
     padding: 10px;
+    line-height: 1.6;
   }
 
-  /* TikTok embed styling override */
+  .success {
+    color: #25a745;
+    font-weight: bold;
+    padding: 10px;
+  }
+
   .tiktok-embed {
     margin: 0 auto !important;
     max-width: 100% !important;
@@ -177,14 +183,14 @@
     <button class="show-btn" onclick="showByUsername()">Show Profile</button>
 
     <div class="help-box">
-      <b>💡 Note:</b> Username se profile TikTok ki security ki wajah se direct load nahi hoti. 
-      Behtar natija ke liye <b>"Embed Code"</b> tab use karein.
+      <b>💡 Note:</b> Username se profile TikTok ki security ki wajah se kabhi kabhi load nahi hoti. 
+      Behtar natije ke liye <b>"Embed Code"</b> tab use karein.
     </div>
   </div>
 
   <!-- Embed Code Input -->
   <div id="embedBox" style="display:none;">
-    <textarea id="embedInput" placeholder='Yahan TikTok ka embed code paste karein...&#10;&#10;Example:&#10;<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@username" data-unique-id="username" data-embed-type="creator">...'></textarea>
+    <textarea id="embedInput" placeholder='Yahan TikTok ka embed code paste karein...'></textarea>
     <button class="show-btn" onclick="showByEmbed()">Load Embed</button>
 
     <div class="help-box">
@@ -193,7 +199,7 @@
         <li>TikTok app ya website par jayein</li>
         <li>Apni profile ya kisi video par <b>Share</b> button dabayein</li>
         <li><b>"Embed"</b> option select karein</li>
-        <li>Code copy karke yahan paste karein</li>
+        <li>Poora code copy karke yahan paste karein</li>
         <li><b>"Load Embed"</b> dabayein</li>
       </ol>
     </div>
@@ -202,12 +208,13 @@
   <div id="result"></div>
 </div>
 
-<!-- TikTok Official Embed Script -->
+<!-- TikTok Official Embed Script (initial load) -->
 <script async src="https://www.tiktok.com/embed.js"></script>
 
 <script>
   let currentTab = 'username';
 
+  // ===== Tab Switch =====
   function switchTab(tab) {
     currentTab = tab;
     document.getElementById('tabUsername').classList.toggle('active', tab === 'username');
@@ -246,7 +253,7 @@
       return;
     }
 
-    // TikTok official creator embed code generate karo
+    // TikTok official creator embed code
     const embedHTML = `
       <blockquote class="tiktok-embed" 
         cite="https://www.tiktok.com/@${username}" 
@@ -262,11 +269,10 @@
     result.style.display = 'block';
     result.innerHTML = embedHTML;
 
-    // TikTok script ko dobara load karo taake embed render ho
     reloadTikTokEmbed();
   }
 
-  // ===== Method 2: Embed code paste karke =====
+  // ===== Method 2: Embed code paste karke (FIXED VALIDATION) =====
   function showByEmbed() {
     const code = document.getElementById('embedInput').value.trim();
     const result = document.getElementById('result');
@@ -277,14 +283,30 @@
       return;
     }
 
-    if (!code.includes('tiktok-embed') && !code.includes('blockquote')) {
+    // Check karo ke sahi TikTok embed code hai ya nahi
+    const hasBlockquote = code.includes('tiktok-embed');
+    const hasCite = code.includes('cite=');
+
+    if (!hasBlockquote && !hasCite) {
       result.style.display = 'block';
-      result.innerHTML = '<div class="error">❌ Yeh sahi TikTok embed code nahi lagta!</div>';
+      result.innerHTML = `
+        <div class="error">
+          ❌ Yeh sahi TikTok embed code nahi lagta!<br><br>
+          Please TikTok se <b>"Share → Embed"</b> wala poora code copy karein.<br>
+          Us code mein <b>blockquote</b> aur <b>cite</b> hona zaroori hai.
+        </div>
+      `;
       return;
     }
 
+    // Agar user ne sirf blockquote diya hai (bina script), toh script add karo
+    let finalCode = code;
+    if (!code.includes('tiktok.com/embed.js')) {
+      finalCode += '\n<script async src="https://www.tiktok.com/embed.js"><\/script>';
+    }
+
     result.style.display = 'block';
-    result.innerHTML = code;
+    result.innerHTML = '<div class="success">✅ Embed load ho raha hai...</div>' + finalCode;
 
     reloadTikTokEmbed();
   }
@@ -292,17 +314,19 @@
   // ===== TikTok Embed Script Reload =====
   function reloadTikTokEmbed() {
     // Purani script hatao
-    const oldScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
-    if (oldScript) oldScript.remove();
+    const oldScripts = document.querySelectorAll('script[src*="tiktok.com/embed.js"]');
+    oldScripts.forEach(s => s.remove());
 
-    // Nayi script add karo
-    const script = document.createElement('script');
-    script.src = 'https://www.tiktok.com/embed.js';
-    script.async = true;
-    document.body.appendChild(script);
+    // Nayi script add karo taake embed render ho jaye
+    setTimeout(() => {
+      const script = document.createElement('script');
+      script.src = 'https://www.tiktok.com/embed.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }, 100);
   }
 
-  // Enter key support
+  // ===== Enter key support =====
   document.getElementById('tiktokInput').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') showByUsername();
   });
